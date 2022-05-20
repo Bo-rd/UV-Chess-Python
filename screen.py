@@ -47,7 +47,7 @@ class Tile:
             pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
             self.active = False
-        pygame.display.flip()
+
         if self.x > 0 and self.x < 4 and self.y > 11 and self.y < 15:
             pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
@@ -56,6 +56,8 @@ class Tile:
             pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
             self.active = False
+        # For some reason this draws to the screen, don't ask why I have no idea yet
+        pygame.display.flip()
 
     def getPos(self):
         print(self.x + ", " + self.y)
