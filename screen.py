@@ -1,7 +1,7 @@
 import pygame
 pygame.init()
 background_colour = (169, 169, 169)
-(width, height) = (800, 600)
+(width, height) = (800, 800)
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('UV Chess')
 screen.fill(background_colour)
@@ -14,17 +14,41 @@ class Tile:
         self.x = xPos
         self.y = yPos
         self.color = color
+        self.size = 50
         print("Made a tile at: " + str(self.x) + ", " + str(self.y))
 
     def draw(self, screen):
+        gray = (169, 169, 169)
+        black = (0, 0, 0)
+        white = (255, 255, 255)
+        blue = (0, 0, 255)
         surface = screen
+
+        # Makes pattern on board
         if self.color == 1:
-            pygame.draw.rect(surface, (255, 255, 255), pygame.Rect(
-                self.x*30, self.y*30, 30, 30))
+            pygame.draw.rect(surface, white, pygame.Rect(
+                self.x*self.size, self.y*self.size, self.size, self.size))
         else:
-            pygame.draw.rect(surface, (0, 0, 0), pygame.Rect(
-                self.x*30, self.y*30, 30, 30))
+            pygame.draw.rect(surface, black, pygame.Rect(
+                self.x*self.size, self.y*self.size, self.size, self.size))
+
+        # Makes gray corners and blue outline
+        if self.x == 0 or self.y == 0 or self.x == 15 or self.y == 15:
+            pygame.draw.rect(surface, blue, pygame.Rect(
+                self.x*self.size, self.y*self.size, self.size, self.size))
+        if self.x > 0 and self.x < 4 and self.y > 0 and self.y < 4:
+            pygame.draw.rect(surface, gray, pygame.Rect(
+                self.x*self.size, self.y*self.size, self.size, self.size))
+        if self.x > 11 and self.x < 15 and self.y > 11 and self.y < 15:
+            pygame.draw.rect(surface, gray, pygame.Rect(
+                self.x*self.size, self.y*self.size, self.size, self.size))
         pygame.display.flip()
+        if self.x > 0 and self.x < 4 and self.y > 11 and self.y < 15:
+            pygame.draw.rect(surface, gray, pygame.Rect(
+                self.x*self.size, self.y*self.size, self.size, self.size))
+        if self.x > 11 and self.x < 15 and self.y > 0 and self.y < 4:
+            pygame.draw.rect(surface, gray, pygame.Rect(
+                self.x*self.size, self.y*self.size, self.size, self.size))
 
     def getPos(self):
         print(self.x + ", " + self.y)
