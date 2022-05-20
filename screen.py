@@ -15,6 +15,8 @@ class Tile:
         self.y = yPos
         self.color = color
         self.size = 50
+        # Active is used to check for border or corner tiles
+        self.active = True
         print("Made a tile at: " + str(self.x) + ", " + str(self.y))
 
     def draw(self, screen):
@@ -36,19 +38,24 @@ class Tile:
         if self.x == 0 or self.y == 0 or self.x == 15 or self.y == 15:
             pygame.draw.rect(surface, blue, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
+            self.active = False
         if self.x > 0 and self.x < 4 and self.y > 0 and self.y < 4:
             pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
+            self.active = False
         if self.x > 11 and self.x < 15 and self.y > 11 and self.y < 15:
             pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
+            self.active = False
         pygame.display.flip()
         if self.x > 0 and self.x < 4 and self.y > 11 and self.y < 15:
             pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
+            self.active = False
         if self.x > 11 and self.x < 15 and self.y > 0 and self.y < 4:
             pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
+            self.active = False
 
     def getPos(self):
         print(self.x + ", " + self.y)
