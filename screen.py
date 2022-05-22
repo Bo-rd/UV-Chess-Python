@@ -62,7 +62,7 @@ class Tile:
     def getPos(self):
         print(self.x + ", " + self.y)
 
-
+#ye
 board_made = False
 while running:
     if board_made is False:
