@@ -1,7 +1,5 @@
-from matplotlib.pyplot import pie
-import pygame
+
 import piece
-import re
 
 class Player():
 
