@@ -8,13 +8,13 @@ class Player():
         self.team = team
         self.pieces = pieceList
         
-        for piece in pieceList: # get reference to players king
+        for piece in pieceList: 
+            # get reference to players king, could
+            # place king in 0th index instead
             if piece.getPieceId().endswith('king'):
                 self.king = piece
 
         # if checked, valid moves are restricted to unchecking
-        # a function should verify status at beginning of every
-        # turn
         self.inCheck = False 
 
     def __str__(self):
@@ -26,6 +26,8 @@ class Player():
     def getPieces(self):
         return self.pieces
 
+    # function should verify status at beginning of every turn
     def kingStatus(self):
-        if self.king.checked:
-            self.inCheck = True
+        # if self.king.checked:
+        #     self.inCheck = True
+        pass
