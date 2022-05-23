@@ -1,5 +1,15 @@
+import button
+import os
+import piece
 from pickle import TRUE
-import pygame, os, sys, button
+import pygame
+import sys
+
+
+
+ROWS = 16
+COLS = 16
+TILES = [[0 for i in range(COLS)] for j in range(ROWS)]
 
 #App Folder directory
 app_folder = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -73,15 +83,12 @@ def createBoard(running):
     board_made = False
     while running:
         if board_made is False:
-            rows = 16
-            cols = 16
-            tiles = [[0 for i in range(cols)] for j in range(rows)]
-            for x in range(rows):
-                for y in range(cols):
-                    tiles[y][x] = Tile(x, y, x % 2 + y % 2)
-            for x in range(rows):
-                for y in range(cols):
-                    tiles[y][x].draw(screen)
+            for x in range(ROWS):
+                for y in range(COLS):
+                    TILES[y][x] = Tile(x, y, x % 2 + y % 2)
+            for x in range(ROWS):
+                for y in range(COLS):
+                    TILES[y][x].draw(screen)
             board_made = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -125,3 +132,5 @@ def startMenu():
             pygame.display.update() 
 
 startMenu()
+pawn = piece.Test(10, 8, None, None, "blue pawn", TILES)
+pawn.draw(screen)
