@@ -4,6 +4,7 @@ import piece
 import tile
 import pygame
 import sys
+import fpstimer
 
 ROWS = 16
 COLS = 16
@@ -57,14 +58,25 @@ def startMenu():
 
 
 def initPieces():
-    print("Drawing pieces...")
+    print("Initializing pieces...")
     # pawn = piece.Test(10, 8, None, None, "blue pawn", TILES)
     # pawn.draw(SCREEN)
+
+# this should be used to update every frame
+def tick():
+    pass
+
+# this should be used to draw every frame
+def render(screen):
+    pygame.display.flip()
 
 
 def mainloop():
     print("In mainloop...")
+    fps = fpstimer.FPSTimer(60)
     while True:
+        tick()
+        render(SCREEN)
         for event in pygame.event.get():
             # if event object type is QUIT
             # then quitting the pygame
@@ -76,6 +88,7 @@ def mainloop():
                 quit()
             # Draws the surface object to the screen.
             pygame.display.update()
+        fps.sleep()
 
 
 """GAME INIT"""
