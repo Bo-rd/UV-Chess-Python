@@ -8,7 +8,7 @@ class Tile:
         self.size = 50
         # Active is used to check for border or corner tiles
         self.active = True
-        print("Made a tile at: " + str(self.x) + ", " + str(self.y))
+        # print("Made a tile at: " + str(self.x) + ", " + str(self.y))
 
     def draw(self, screen):
         gray = (169, 169, 169)
@@ -24,8 +24,7 @@ class Tile:
         else:
             pygame.draw.rect(surface, black, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
-
-        # Makes gray corners and blue outline
+            # Makes gray corners and blue outline
         if self.x == 0 or self.y == 0 or self.x == 15 or self.y == 15:
             pygame.draw.rect(surface, blue, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))

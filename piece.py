@@ -4,14 +4,16 @@ import abc
 
 class Piece(abc.ABC):
 
-    def __init__(self, xPos, yPos, team, graphic, pieceId, tilesList):
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList):
         abc.ABC.__init__(self)
         self.x = xPos
         self.y = yPos
-        self.size = 25
+        self.size = 50
+        self.rect = None
         self.team = team
-        self.graphic = graphic  # picture of the piece
+        self.graphic = pygame.image.load(graphicPath)  # picture of the piece
         self.captured = False
+        self.selected = False
         self.pieceId = pieceId
         self.tilesList = tilesList
         self.validTiles = []  # contains a list of valid tiles to move to. Set by showLegalMoves
@@ -20,8 +22,7 @@ class Piece(abc.ABC):
         return f"{self.pieceId} at x: {self.x}, y: {self.y}"
 
     def draw(self, surface):
-        pygame.draw.rect(surface, (0, 0, 255), pygame.Rect(
-                self.x*self.size, self.y*self.size, self.size, self.size))
+        pass
 
     @abc.abstractmethod
     def showLegalMoves(self):
