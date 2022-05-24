@@ -6,7 +6,6 @@ import pygame
 import sys
 
 
-
 ROWS = 16
 COLS = 16
 TILES = [[0 for i in range(COLS)] for j in range(ROWS)]
@@ -78,7 +77,9 @@ class Tile:
     def getPos(self):
         print(self.x + ", " + self.y)
 
-#creates the chess board
+# creates the chess board
+
+
 def createBoard(running):
     board_made = False
     while running:
@@ -94,42 +95,37 @@ def createBoard(running):
             if event.type == pygame.QUIT:
                 running = False
 
+
 def startMenu():
     menuRunning = True
-    img_size = (700,350)
+    img_size = (700, 350)
     white = (255, 255, 255)
     startSplash = pygame.image.load(r'./graphics/Logo.png')
     startSplash = pygame.transform.scale(startSplash, img_size)
     start_button = pygame.image.load(r'./graphics/StartButton.png')
     startButton = button.Button(150, 300, start_button)
-    while menuRunning :
+    while menuRunning:
         screen.fill(white)
-    
-        #places splash image on screen
+        # places splash image on screen
         screen.blit(startSplash, (50, 0))
-        
         if startButton.draw(screen):
             createBoard(running)
             menuRunning = False
 
-    
         # iterate over the list of Event objects
         # that was returned by pygame.event.get() method.
-        for event in pygame.event.get() :
-    
+        for event in pygame.event.get():
             # if event object type is QUIT
             # then quitting the pygame
             # and program both.
-            if event.type == pygame.QUIT :
-    
+            if event.type == pygame.QUIT:
                 # deactivates the pygame library
                 pygame.quit()
-    
                 # quit the program.
                 quit()
-    
-            # Draws the surface object to the screen.  
-            pygame.display.update() 
+            # Draws the surface object to the screen.
+            pygame.display.update()
+
 
 startMenu()
 pawn = piece.Test(10, 8, None, None, "blue pawn", TILES)
