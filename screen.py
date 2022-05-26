@@ -60,14 +60,22 @@ def startMenu():
 
 def initPieces():
     print("Initializing pieces...")
-    pawn = piece.Test(xPos=200, yPos=250, team=None, graphicPath=os.path.join("graphics", "pieces", "blue", "pawnBlue.png"),
+    pawn = piece.Test(xPos=200, yPos=250, team=None,
+                      graphicPath=os.path.join("graphics", "pieces", "blue", "pawnBlue.png"),
                       pieceId="blue pawn", tilesList=TILES, surface=SCREEN)
+    pawngrn = piece.Test(xPos=100, yPos=250, team=None,
+                         graphicPath=os.path.join("graphics", "pieces", "black", "pawnBlack.png"),
+                         pieceId="black pawn", tilesList=TILES, surface=SCREEN)
     pawn.draw()
-    return pawn
+    pawngrn.draw()
+    return [pawn, pawngrn]
+
 
 # this should be used to update every frame
-def tick():
-    SCREEN.blit(PIECES.graphic, PIECES.rect)
+def tick(movingPiece):
+    if movingPiece is not None:
+        SCREEN.blit(movingPiece.graphic, movingPiece.rect)
+
 
 # this should be used to draw every frame
 def render(screen):
@@ -75,10 +83,11 @@ def render(screen):
 
 
 def mainloop():
+    movingPiece = None
     print("In mainloop...")
     fps = fpstimer.FPSTimer(60)
     while True:
-        tick()
+        tick(movingPiece)
         render(SCREEN)
         for event in pygame.event.get():
             # if event object type is QUIT
@@ -89,20 +98,24 @@ def mainloop():
                 pygame.quit()
                 # quit the program.
                 quit()
+
+            # Code for moving pieces
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 print("Mouse down")
-                print(PIECES.rect.x)
-                print(PIECES.moving)
-                if PIECES.rect.collidepoint(event.pos):
-                    print("Found piece")
-                    PIECES.moving = True
-                print(PIECES.moving)
-            elif event.type == pygame.MOUSEBUTTONUP:
-                print("Mouse Up")
-                PIECES.moving = False
-            elif event.type == pygame.MOUSEMOTION and PIECES.moving:
-                print("Mouse Moving")
-                PIECES.move(event)
+                for piece in PIECES:
+                    # Check if mouse is under the piece we want
+                    if piece.rect.collidepoint(event.pos):
+                        print("Found piece")
+                        piece.moving = True
+                        movingPiece = piece
+            if movingPiece:
+                if event.type == pygame.MOUSEBUTTONUP:
+                    print("Mouse Up")
+                    if movingPiece:
+                        movingPiece.moving = False
+                elif event.type == pygame.MOUSEMOTION and movingPiece.moving:
+                    print("Mouse Moving")
+                    movingPiece.move(event)
 
             pygame.display.update()
         fps.sleep()
@@ -110,7 +123,7 @@ def mainloop():
 
 """GAME INIT"""
 
-#App Folder directory
+# App Folder directory
 app_folder = os.path.dirname(os.path.realpath(sys.argv[0]))
 os.chdir(app_folder)
 
