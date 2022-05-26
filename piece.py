@@ -25,6 +25,8 @@ class Piece(abc.ABC):
 
     def draw(self):
         self.surface.blit(self.graphic, self.rect)
+        self.x = self.rect.x
+        self.y = self.rect.y
 
     @abc.abstractmethod
     def showLegalMoves(self):
