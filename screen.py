@@ -12,6 +12,7 @@ TILES = [[0 for i in range(COLS)] for j in range(ROWS)]
 GAMETILES = []
 (WIDTH, HEIGHT) = (800, 800)
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+DIRTY_BLITS = []
 
 
 # creates the chess board
@@ -59,12 +60,14 @@ def startMenu():
 
 def initPieces():
     print("Initializing pieces...")
-    # pawn = piece.Test(10, 8, None, None, "blue pawn", TILES)
-    # pawn.draw(SCREEN)
+    pawn = piece.Test(xPos=200, yPos=250, team=None, graphicPath=os.path.join("graphics", "pieces", "blue", "pawnBlue.png"),
+                      pieceId="blue pawn", tilesList=TILES, surface=SCREEN)
+    pawn.draw()
+    return pawn
 
 # this should be used to update every frame
 def tick():
-    pass
+    SCREEN.blit(PIECES.graphic, PIECES.rect)
 
 # this should be used to draw every frame
 def render(screen):
@@ -86,7 +89,21 @@ def mainloop():
                 pygame.quit()
                 # quit the program.
                 quit()
-            # Draws the surface object to the screen.
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                print("Mouse down")
+                print(PIECES.rect.x)
+                print(PIECES.moving)
+                if PIECES.rect.collidepoint(event.pos):
+                    print("Found piece")
+                    PIECES.moving = True
+                print(PIECES.moving)
+            elif event.type == pygame.MOUSEBUTTONUP:
+                print("Mouse Up")
+                PIECES.moving = False
+            elif event.type == pygame.MOUSEMOTION and PIECES.moving:
+                print("Mouse Moving")
+                PIECES.move(event)
+
             pygame.display.update()
         fps.sleep()
 
@@ -105,5 +122,5 @@ SCREEN.fill(background_colour)
 pygame.display.update()
 
 startMenu()
-initPieces()
+PIECES = initPieces()
 mainloop()
