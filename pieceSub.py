@@ -10,8 +10,8 @@ class King(Piece):
     Cannot move into check, if in check, must move
     out of check.
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList):
-        super().init(self, xPos, yPos, team, graphicPath, pieceId, tilesList)
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
         self.hasMoved = False
         self.inCheck = False
         
@@ -25,8 +25,8 @@ class Queen(Piece):
     as the path is clear. If an enemy is in the path, it 
     may be captured. Friendly pieces cannot be passed.
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList):
-        super().init(self, xPos, yPos, team, graphicPath, pieceId, tilesList)
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
         
     def showLegalMoves(self):
         pass
@@ -39,8 +39,8 @@ class Knight(Piece):
     friendly or enemy pieces, and only captures if it
     lands on an enemy piece.
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList):
-        super().init(self, xPos, yPos, team, graphicPath, pieceId, tilesList)
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
         
     def showLegalMoves(self):
         pass
@@ -53,8 +53,8 @@ class Bishop(Piece):
     is an enemy on the path, it may be captured and the
     Bishop takes its place. 
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList):
-        super().init(self, xPos, yPos, team, graphicPath, pieceId, tilesList)
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
         
     def showLegalMoves(self):
         pass
@@ -75,8 +75,8 @@ class Rook(Piece):
     Example on King side -> R _ _ K -> _ K R _
     Example on Queen side -> K _ _ _ R -> _ R K _ _ 
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList):
-        super().init(self, xPos, yPos, team, graphicPath, pieceId, tilesList)
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
         self.hasMoved = False
         
     def showLegalMoves(self):
@@ -95,8 +95,8 @@ class Pawn(Piece):
     moves diagonally to the space that was skipped, the enemy
     Pawn is captured.
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList):
-        super().init(self, xPos, yPos, team, graphicPath, pieceId, tilesList)
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
         self.hasMoved = False
 
     def showLegalMoves(self):

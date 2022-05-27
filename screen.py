@@ -6,6 +6,8 @@ import pygame
 import sys
 import fpstimer
 
+from player import Player
+
 ROWS = 16
 COLS = 16
 TILES = [[0 for i in range(COLS)] for j in range(ROWS)]
@@ -60,15 +62,45 @@ def startMenu():
 
 def initPieces():
     print("Initializing pieces...")
-    pawn = piece.Test(xPos=200, yPos=250, team=None,
-                      graphicPath=os.path.join("graphics", "pieces", "blue", "pawnBlue.png"),
-                      pieceId="blue pawn", tilesList=TILES, surface=SCREEN)
-    pawngrn = piece.Test(xPos=100, yPos=250, team=None,
-                         graphicPath=os.path.join("graphics", "pieces", "black", "pawnBlack.png"),
-                         pieceId="black pawn", tilesList=TILES, surface=SCREEN)
-    pawn.draw()
-    pawngrn.draw()
-    return [pawn, pawngrn]
+    # pawn = piece.Test(xPos=225, yPos=125, team=None,
+    #                   graphicPath=os.path.join("graphics", "pieces", "blue", "pawnBlue.png"),
+    #                   pieceId="blue pawn", tilesList=TILES, surface=SCREEN)
+    # pawngrn = piece.Test(xPos=125, yPos=225, team=None,
+    #                      graphicPath=os.path.join("graphics", "pieces", "black", "pawnBlack.png"),
+    #                      pieceId="black pawn", tilesList=TILES, surface=SCREEN)
+    # pawn.draw()
+    # pawngrn.draw()
+
+    blueStart = [(225, 75), (275, 75), (325, 75), (375, 75),
+                (425, 75), (475, 75), (525, 75), (575, 75),
+                (225, 125), (275, 125), (325, 125), (375, 125),
+                (425, 125), (475, 125), (525, 125), (575, 125)]
+
+    redStart = [(225, 725), (275, 725), (325, 725), (375, 725),
+                (425, 725), (475, 725), (525, 725), (575, 725),
+                (225, 675), (275, 675), (325, 675), (375, 675),
+                (425, 675), (475, 675), (525, 675), (575, 675)]
+
+    blackStart = [(75, 225), (75, 275), (75, 325), (75, 375),
+                (75, 425), (75, 475), (75, 525), (75, 575),
+                (125, 225), (125, 275), (125, 325), (125, 375),
+                (125, 425), (125, 475), (125, 525), (125, 575)]
+
+    whiteStart = [(725, 225), (725, 275), (725, 325), (725, 375),
+                (725, 425), (725, 475), (725, 525), (725, 575),
+                (675, 225), (675, 275), (675, 325), (675, 375),
+                (675, 425), (675, 475), (675, 525), (675, 575)]            
+
+    bluePlayer = Player("Blue Team", "Blue", blueStart, TILES, SCREEN)
+    redPlayer = Player("Red Team", "Red", redStart, TILES, SCREEN)
+    blackPlayer = Player("Black Team", "Black", blackStart, TILES, SCREEN)
+    whitePlayer= Player("White Team", "White", whiteStart, TILES, SCREEN)
+
+    out = []
+    out.extend(bluePlayer.getPieces())
+    out.extend(redPlayer.getPieces())
+    out.extend(blackPlayer.getPieces())
+    return out
 
 
 # this should be used to update every frame
