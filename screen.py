@@ -71,6 +71,14 @@ def initPieces():
     # pawn.draw()
     # pawngrn.draw()
 
+    """
+    start coordinates =
+    [rook, bishop, knight, queen, king, ... , pawn1, pawn2, ...]
+    Same order in the constructor of Player
+
+    We'll probably want to move the player generation into the
+    global scope, or return them as part of a list for access.
+    """
     blueStart = [(225, 75), (275, 75), (325, 75), (375, 75),
                 (425, 75), (475, 75), (525, 75), (575, 75),
                 (225, 125), (275, 125), (325, 125), (375, 125),
@@ -101,7 +109,7 @@ def initPieces():
     out.extend(redPlayer.getPieces())
     out.extend(blackPlayer.getPieces())
     out.extend(whitePlayer.getPieces())
-    
+
     return out
 
 
