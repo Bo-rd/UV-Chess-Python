@@ -96,10 +96,12 @@ def initPieces():
     blackPlayer = Player("Black Team", "Black", blackStart, TILES, SCREEN)
     whitePlayer= Player("White Team", "White", whiteStart, TILES, SCREEN)
 
-    out = []
+    out = [] # holds the pieces for mouse tracking
     out.extend(bluePlayer.getPieces())
     out.extend(redPlayer.getPieces())
     out.extend(blackPlayer.getPieces())
+    out.extend(whitePlayer.getPieces())
+    
     return out
 
 
