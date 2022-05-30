@@ -1,4 +1,6 @@
 from piece import Piece
+import math
+
 
 class King(Piece):
     '''
@@ -18,6 +20,9 @@ class King(Piece):
     def showLegalMoves(self):
         pass
 
+    def hideLegalMoves(self):
+        pass
+
 
 class Queen(Piece):
     '''
@@ -29,6 +34,9 @@ class Queen(Piece):
         super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
         
     def showLegalMoves(self):
+        pass
+
+    def hideLegalMoves(self):
         pass
 
 
@@ -45,6 +53,9 @@ class Knight(Piece):
     def showLegalMoves(self):
         pass
 
+    def hideLegalMoves(self):
+        pass
+
 
 class Bishop(Piece):
     '''
@@ -57,6 +68,9 @@ class Bishop(Piece):
         super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
         
     def showLegalMoves(self):
+        pass
+
+    def hideLegalMoves(self):
         pass
 
 
@@ -82,6 +96,9 @@ class Rook(Piece):
     def showLegalMoves(self):
         pass
 
+    def hideLegalMoves(self):
+        pass
+
 
 class Pawn(Piece):
     '''
@@ -98,6 +115,78 @@ class Pawn(Piece):
     def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
         super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
         self.hasMoved = False
+        self.start = True
 
     def showLegalMoves(self):
-        pass
+        if self.start:
+            moveAmt = 100
+        else:
+            moveAmt = 50
+        if self.team == "White":
+            print("showing legal moves")
+            print(f"{self.x}, {self.y}")
+            self.tile.changeColor(surface=self.surface, color=(0, 255, 0))
+            x, y = self.x, self.y
+
+            x -= moveAmt
+        elif self.team == "Black":
+            print("showing legal moves")
+            print(f"{self.x}, {self.y}")
+            self.tile.changeColor(surface=self.surface, color=(0, 255, 0))
+            x, y = self.x, self.y
+
+            x += moveAmt
+        elif self.team == "Red":
+            print("showing legal moves")
+            print(f"{self.x}, {self.y}")
+            self.tile.changeColor(surface=self.surface, color=(0, 255, 0))
+            x, y = self.x, self.y
+
+            y -= moveAmt
+        elif self.team == "Blue":
+            print("showing legal moves")
+            print(f"{self.x}, {self.y}")
+            self.tile.changeColor(surface=self.surface, color=(0, 255, 0))
+            x, y = self.x, self.y
+
+            y += moveAmt
+        else:
+            return False
+
+        if self.start:
+            print("start")
+            if self.team == "White":
+                tile1 = self.tilesList[math.trunc(y / 50)][math.trunc(x / 50)]
+                tile2 = self.tilesList[math.trunc(y / 50)][math.trunc((x + 50) / 50)]
+            elif self.team == "Black":
+                tile1 = self.tilesList[math.trunc(y / 50)][math.trunc(x / 50)]
+                tile2 = self.tilesList[math.trunc(y / 50)][math.trunc((x - 50) / 50)]
+            elif self.team == "Red":
+                tile1 = self.tilesList[math.trunc(y / 50)][math.trunc(x / 50)]
+                tile2 = self.tilesList[math.trunc((y + 50) / 50)][math.trunc(x / 50)]
+            elif self.team == "Blue":
+                tile1 = self.tilesList[math.trunc(y / 50)][math.trunc(x / 50)]
+                tile2 = self.tilesList[math.trunc((y - 50) / 50)][math.trunc(x / 50)]
+            else:
+                return False
+            tile1.changeColor(self.surface, (0, 255, 0))
+            tile2.changeColor(self.surface, (0, 255, 0))
+            self.validTiles.append(tile1)
+            self.validTiles.append(tile2)
+            self.start = False
+
+        else:
+            newTile = self.tilesList[math.trunc(y / 50)][math.trunc(x / 50)]
+            if newTile is self.tile:
+                print("Same")
+            newTile.changeColor(self.surface, (0, 255, 0))
+            print(newTile.color)
+            self.validTiles.append(newTile)
+
+    def hideLegalMoves(self):
+        self.tile.changeColor(surface=self.surface, color=self.tile.color)
+        for tile in self.validTiles:
+            print(tile.x, tile.y)
+            tile.changeColor(surface=self.surface, color=tile.color)
+            self.validTiles = []
+

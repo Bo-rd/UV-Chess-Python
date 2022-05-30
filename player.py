@@ -52,7 +52,6 @@ class Player():
         for p in self.pieces:
             p.draw()
 
-
     def __str__(self):
         return f"ID: {self.id} Team: {self.team}"
 
@@ -61,6 +60,9 @@ class Player():
 
     def getPieces(self):
         return self.pieces
+
+    def getTeam(self):
+        return self.team
 
     # function should verify status at beginning of every turn
     def kingStatus(self):

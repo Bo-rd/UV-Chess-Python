@@ -14,7 +14,8 @@ TILES = [[0 for i in range(COLS)] for j in range(ROWS)]
 GAMETILES = []
 (WIDTH, HEIGHT) = (800, 800)
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-DIRTY_BLITS = []
+CURTEAM = "White"    # Keeps track of whose turn it is
+
 
 
 # creates the chess board
@@ -148,12 +149,15 @@ def mainloop():
                     # Check if mouse is under the piece we want
                     if piece.rect.collidepoint(event.pos):
                         print("Found piece")
+                        print(f"{piece}: {piece.showLegalMoves()}")
                         piece.moving = True
                         movingPiece = piece
             if movingPiece:
                 if event.type == pygame.MOUSEBUTTONUP:
                     print("Mouse Up")
                     if movingPiece:
+                        print("hiding legal moves")
+                        movingPiece.hideLegalMoves()
                         movingPiece.moving = False
                 elif event.type == pygame.MOUSEMOTION and movingPiece.moving:
                     print("Mouse Moving")

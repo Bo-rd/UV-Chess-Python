@@ -1,5 +1,6 @@
 import pygame
 import abc
+import math
 
 
 class Piece(abc.ABC):
@@ -10,7 +11,7 @@ class Piece(abc.ABC):
         self.y = yPos
         self.team = team
         self.graphic = pygame.image.load(graphicPath) # picture of the piece
-        self.graphic = pygame.transform.scale(self.graphic, (35, 35))
+        self.graphic = pygame.transform.scale(self.graphic, (40, 40))
         self.rect = self.graphic.get_rect(center=(self.x, self.y))
         self.surface = surface
         self.captured = False
@@ -18,6 +19,7 @@ class Piece(abc.ABC):
         self.moving = False
         self.pieceId = pieceId
         self.tilesList = tilesList
+        self.tile = self.tilesList[math.trunc(self.y/50)][math.trunc(self.x/50)]
         self.validTiles = []  # contains a list of valid tiles to move to. Set by showLegalMoves
 
     def __str__(self):
@@ -30,7 +32,13 @@ class Piece(abc.ABC):
 
     @abc.abstractmethod
     def showLegalMoves(self):
-        '''highlights all tiles that are legal moves and adds them to self.validTiles'''
+        '''highlights all tiles that are legal moves and adds them to self.validTiles
+        :param orient:
+        '''
+        pass
+
+    @abc.abstractmethod
+    def hideLegalMoves(self):
         pass
 
     def move(self, event):
@@ -47,7 +55,7 @@ class Piece(abc.ABC):
             return False
         self.x = x
         self.y = y
-        self.surface.blit(self.graphic, (self.x, self.y))
+        self.rect.move(self.x, self.y)
         return True
 
     def getPosition(self):
@@ -55,12 +63,3 @@ class Piece(abc.ABC):
 
     def getPieceId(self):
         return self.pieceId
-
-
-class Test(Piece):
-
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
-        Piece.__init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
-
-    def showLegalMoves(self):
-        pass
