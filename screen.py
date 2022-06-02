@@ -166,13 +166,16 @@ def mainloop():
 
                 elif event.type == pygame.MOUSEMOTION and movingPiece.moving:
                     print("Mouse Moving")
+                    movingPiece.tile.draw(SCREEN)
                     for x in range(ROWS):
                         for y in range(COLS):
                             tile = TILES[y][x]
                             if tile.rect.collidepoint(event.pos):
                                 tile.draw(SCREEN)
+                                movingPiece.tile = tile
 
                     movingPiece.move(event)
+                    SCREEN.blit(movingPiece.graphic, movingPiece.rect)
 
             pygame.display.update()
         fps.sleep()
