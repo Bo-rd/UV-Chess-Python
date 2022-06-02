@@ -1,25 +1,26 @@
 import pygame
 import abc
 import math
+import handler as HANDLER
 
 
 class Piece(abc.ABC):
 
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
         abc.ABC.__init__(self)
         self.x = xPos
         self.y = yPos
         self.team = team
         self.graphic = pygame.image.load(graphicPath) # picture of the piece
-        self.graphic = pygame.transform.scale(self.graphic, (40, 40))
-        self.rect = self.graphic.get_rect(center=(self.x, self.y))
+        self.graphic = pygame.transform.scale(self.graphic, (50, 50))
+        self.rect = pygame.Rect(self.x * 50, self.y * 50, 50, 50)
         self.surface = surface
         self.captured = False
         self.selected = False
         self.moving = False
         self.pieceId = pieceId
-        self.tilesList = tilesList
-        self.tile = self.tilesList[math.trunc(self.y/50)][math.trunc(self.x/50)]
+        self.tilesList = HANDLER.getTiles()
+        self.tile = self.tilesList[self.y][self.x]
         self.validTiles = []  # contains a list of valid tiles to move to. Set by showLegalMoves
 
     def __str__(self):
@@ -27,8 +28,6 @@ class Piece(abc.ABC):
 
     def draw(self):
         self.surface.blit(self.graphic, self.rect)
-        self.x = self.rect.x
-        self.y = self.rect.y
 
     @abc.abstractmethod
     def showLegalMoves(self):

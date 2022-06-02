@@ -58,10 +58,10 @@ def initPieces():
     We'll probably want to move the player generation into the
     global scope, or return them as part of a list for access.
     """
-    blueStart = [(225, 75), (275, 75), (325, 75), (375, 75),
-                (425, 75), (475, 75), (525, 75), (575, 75),
-                (225, 125), (275, 125), (325, 125), (375, 125),
-                (425, 125), (475, 125), (525, 125), (575, 125)]
+    blueStart = [(4, 1), (5, 1), (6, 1), (7, 1),
+                (8, 1), (9, 1), (10, 1), (11, 1),
+                (4, 2), (5, 2), (6, 2), (7, 2),
+                (8, 2), (9, 2), (10, 2), (11, 2)]
 
     redStart = [(225, 725), (275, 725), (325, 725), (375, 725),
                 (425, 725), (475, 725), (525, 725), (575, 725),
@@ -78,10 +78,10 @@ def initPieces():
                 (675, 225), (675, 275), (675, 325), (675, 375),
                 (675, 425), (675, 475), (675, 525), (675, 575)]
 
-    bluePlayer = Player("Blue Team", "Blue", blueStart, HANDLER.getTiles(), SCREEN)
-    redPlayer = Player("Red Team", "Red", redStart, HANDLER.getTiles(), SCREEN)
-    blackPlayer = Player("Black Team", "Black", blackStart, HANDLER.getTiles(), SCREEN)
-    whitePlayer= Player("White Team", "White", whiteStart, HANDLER.getTiles(), SCREEN)
+    bluePlayer = Player("Blue Team", "Blue", blueStart, SCREEN)
+    #redPlayer = Player("Red Team", "Red", redStart, SCREEN)
+    #blackPlayer = Player("Black Team", "Black", blackStart, SCREEN)
+    #whitePlayer= Player("White Team", "White", whiteStart, SCREEN)
 
 
 # this should be used to update every frame
@@ -91,9 +91,9 @@ def tick():
         for y in range(HANDLER.getCols()):
             HANDLER.getTiles()[y][x].tick()
     bluePlayer.playerTick()
-    redPlayer.playerTick()
-    whitePlayer.playerTick()
-    blackPlayer.playerTick()
+    #redPlayer.playerTick()
+    #whitePlayer.playerTick()
+    #blackPlayer.playerTick()
 
 
 # this should be used to draw every frame
@@ -102,9 +102,9 @@ def render(screen):
         for y in range(HANDLER.getCols()):
             HANDLER.getTiles()[y][x].render(screen)
     bluePlayer.playerRender(screen)
-    redPlayer.playerRender(screen)
-    blackPlayer.playerRender(screen)
-    whitePlayer.playerRender(screen)
+    #redPlayer.playerRender(screen)
+    #blackPlayer.playerRender(screen)
+    #whitePlayer.playerRender(screen)
     pygame.display.flip()
 
 

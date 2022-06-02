@@ -12,11 +12,11 @@ class King(Piece):
     Cannot move into check, if in check, must move
     out of check.
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
-        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, surface)
         self.hasMoved = False
         self.inCheck = False
-        
+
     def showLegalMoves(self):
         pass
 
@@ -27,12 +27,12 @@ class King(Piece):
 class Queen(Piece):
     '''
     A queen may move any direction, any length, so long
-    as the path is clear. If an enemy is in the path, it 
+    as the path is clear. If an enemy is in the path, it
     may be captured. Friendly pieces cannot be passed.
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
-        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
-        
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, surface)
+
     def showLegalMoves(self):
         pass
 
@@ -47,9 +47,9 @@ class Knight(Piece):
     friendly or enemy pieces, and only captures if it
     lands on an enemy piece.
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
-        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
-        
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, surface)
+
     def showLegalMoves(self):
         pass
 
@@ -62,11 +62,11 @@ class Bishop(Piece):
     The Bishop moves diagonally, any length, so long
     as the lane is clear to the destination. If there
     is an enemy on the path, it may be captured and the
-    Bishop takes its place. 
+    Bishop takes its place.
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
-        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
-        
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, surface)
+
     def showLegalMoves(self):
         pass
 
@@ -82,17 +82,17 @@ class Rook(Piece):
     If the King and Rook are unmoved, with empty
     space between them, the player may "Castle"
     in which case the King and Rook slide to meet
-    eachother, then switch places, ending on the 
-    opposite side they started on in relation to 
+    eachother, then switch places, ending on the
+    opposite side they started on in relation to
     eachother.
 
     Example on King side -> R _ _ K -> _ K R _
-    Example on Queen side -> K _ _ _ R -> _ R K _ _ 
+    Example on Queen side -> K _ _ _ R -> _ R K _ _
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
-        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, surface)
         self.hasMoved = False
-        
+
     def showLegalMoves(self):
         pass
 
@@ -103,17 +103,17 @@ class Rook(Piece):
 class Pawn(Piece):
     '''
     May move two forward on first move, otherwise one forward.
-    Captures diagonally. If pawn reaches the starting line of 
+    Captures diagonally. If pawn reaches the starting line of
     an enemy team - it can be promoted to a Queen, Knight, Rook
     or Bishop.
 
-    Pawns can also capture "En Passant". If an enemy Pawn moves 
+    Pawns can also capture "En Passant". If an enemy Pawn moves
     foward two spaces on its first move, and another pawn then
     moves diagonally to the space that was skipped, the enemy
     Pawn is captured.
     '''
-    def __init__(self, xPos, yPos, team, graphicPath, pieceId, tilesList, surface):
-        super().__init__(xPos, yPos, team, graphicPath, pieceId, tilesList, surface)
+    def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
+        super().__init__(xPos, yPos, team, graphicPath, pieceId, surface)
         self.hasMoved = False
         self.start = True
 
@@ -186,4 +186,3 @@ class Pawn(Piece):
         for tile in self.validTiles:
             tile.changeColor(surface=self.surface, color=tile.color)
             self.validTiles = []
-

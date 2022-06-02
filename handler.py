@@ -53,3 +53,16 @@ def eventHandler():
 def getMousePos():
     global mousePos
     return mousePos
+
+piece_toggle = False
+piece_held = None
+
+def toggle_ON_piece_held(self, value, clicked_piece):
+    global piece_toggle, piece_held
+    piece_toggle = True
+    piece_held = clicked_piece
+
+def toggle_OFF_piece_held(self):
+    global piece_toggle, piece_held
+    piece_toggle = False
+    piece_held = None
