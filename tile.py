@@ -10,6 +10,9 @@ class Tile:
         self.rect = None
         # Active is used to check for border or corner tiles
         self.active = True
+
+        self.hasPiece = False
+        self.piece = None
         # print("Made a tile at: " + str(self.x) + ", " + str(self.y))
 
     def changeColor(self, surface, color):
@@ -25,7 +28,16 @@ class Tile:
 
         pygame.display.update()
 
-    def draw(self, screen):
+    def putPiece(self, pieceToPlace):
+        self.piece = pieceToPlace
+        self.hasPiece = True
+
+    def removePiece(self):
+        self.piece = None
+        self.hasPiece = False
+
+
+    def render(self, screen):
         gray = (169, 169, 169)
         black = (0, 0, 0)
         white = (255, 255, 255)
@@ -44,25 +56,25 @@ class Tile:
             self.rect = pygame.draw.rect(surface, blue, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
             self.active = False
-        if self.x > 0 and self.x < 4 and self.y > 0 and self.y < 4:
+        elif self.x > 0 and self.x < 4 and self.y > 0 and self.y < 4:
             self.rect = pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
             self.active = False
-        if self.x > 11 and self.x < 15 and self.y > 11 and self.y < 15:
+        elif self.x > 11 and self.x < 15 and self.y > 11 and self.y < 15:
             self.rect = pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
             self.active = False
 
-        if self.x > 0 and self.x < 4 and self.y > 11 and self.y < 15:
+        elif self.x > 0 and self.x < 4 and self.y > 11 and self.y < 15:
             self.rect = pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
             self.active = False
-        if self.x > 11 and self.x < 15 and self.y > 0 and self.y < 4:
+        elif self.x > 11 and self.x < 15 and self.y > 0 and self.y < 4:
             self.rect = pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
             self.active = False
         # For some reason this draws to the screen, don't ask why I have no idea yet
-        pygame.display.update()
+
 
     def getPos(self):
         print(self.x + ", " + self.y)

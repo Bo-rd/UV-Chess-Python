@@ -1,32 +1,21 @@
 import button
 import os
 import piece
-import tile
+import tile as Tile
 import pygame
 import sys
 import fpstimer
+import handler as HANDLER
 
 from player import Player
-
-ROWS = 16
-COLS = 16
-TILES = [[0 for i in range(COLS)] for j in range(ROWS)]
 GAMETILES = []
 (WIDTH, HEIGHT) = (800, 800)
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 CURTEAM = "White"    # Keeps track of whose turn it is
+HANDLER.setScreen(SCREEN)
 
-
-
-# creates the chess board
-def createBoard():
-    print("Drawing tiles...")
-    for x in range(ROWS):
-        for y in range(COLS):
-            TILES[y][x] = tile.Tile(x, y, x % 2 + y % 2)
-    for x in range(ROWS):
-        for y in range(COLS):
-            TILES[y][x].draw(SCREEN)
+def getScreen():
+    return SCREEN
 
 
 def startMenu():
@@ -43,7 +32,7 @@ def startMenu():
         # places splash image on screen
         SCREEN.blit(startSplash, (50, 0))
         if startButton.draw(SCREEN):
-            createBoard()
+            HANDLER.createBoard()
             menuRunning = False
 
         # iterate over the list of Event objects
@@ -89,12 +78,12 @@ def initPieces():
     whiteStart = [(725, 225), (725, 275), (725, 325), (725, 375),
                 (725, 425), (725, 475), (725, 525), (725, 575),
                 (675, 225), (675, 275), (675, 325), (675, 375),
-                (675, 425), (675, 475), (675, 525), (675, 575)]            
+                (675, 425), (675, 475), (675, 525), (675, 575)]
 
-    bluePlayer = Player("Blue Team", "Blue", blueStart, TILES, SCREEN)
-    redPlayer = Player("Red Team", "Red", redStart, TILES, SCREEN)
-    blackPlayer = Player("Black Team", "Black", blackStart, TILES, SCREEN)
-    whitePlayer= Player("White Team", "White", whiteStart, TILES, SCREEN)
+    bluePlayer = Player("Blue Team", "Blue", blueStart, HANDLER.getTiles(), SCREEN)
+    redPlayer = Player("Red Team", "Red", redStart, HANDLER.getTiles(), SCREEN)
+    blackPlayer = Player("Black Team", "Black", blackStart, HANDLER.getTiles(), SCREEN)
+    whitePlayer= Player("White Team", "White", whiteStart, HANDLER.getTiles(), SCREEN)
 
     out = [] # holds the pieces for mouse tracking
     out.extend(bluePlayer.getPieces())
@@ -149,9 +138,9 @@ def mainloop():
                     if movingPiece:
                         print("hiding legal moves")
                         movingPiece.hideLegalMoves()
-                        for x in range(ROWS):
-                            for y in range(COLS):
-                                tile = TILES[y][x]
+                        for x in range(HANDLER.getRows()):
+                            for y in range(HANDLER.getCols()):
+                                tile = HANDLER.getTiles()[y][x]
                             # Check if mouse is under the piece we want
                                 if tile.rect.collidepoint(event.pos):
                                     print(f"Tile | x: {tile.rect.centerx} | y: {tile.rect.centery}")
@@ -166,12 +155,12 @@ def mainloop():
 
                 elif event.type == pygame.MOUSEMOTION and movingPiece.moving:
                     print("Mouse Moving")
-                    movingPiece.tile.draw(SCREEN)
-                    for x in range(ROWS):
-                        for y in range(COLS):
-                            tile = TILES[y][x]
+                    movingPiece.tile.render(SCREEN)
+                    for x in range(HANDLER.getRows()):
+                        for y in range(HANDLER.getCols()):
+                            tile = HANDLER.getTiles()[y][x]
                             if tile.rect.collidepoint(event.pos):
-                                tile.draw(SCREEN)
+                                tile.render(SCREEN)
                                 movingPiece.tile = tile
 
                     movingPiece.move(event)
