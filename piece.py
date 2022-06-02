@@ -44,18 +44,13 @@ class Piece(abc.ABC):
     def move(self, event):
         self.rect.move_ip(event.rel)
 
-    def setPos(self, x, y):
+    def setPos(self, x, y, tile):
         '''Moves the piece. Returns True if tile moved successfully, False if not'''
-        if x > 15 or y > 15:
-            return False
-        if x < 0 or y < 0:
-            return False
-        tile = self.tilesList[y][x]
-        if tile not in self.validTiles:
-            return False
         self.x = x
         self.y = y
-        self.rect.move(self.x, self.y)
+        print(tile.rect.centery)
+        self.rect.centerx = self.x
+        self.rect.centery = self.y
         return True
 
     def getPosition(self):

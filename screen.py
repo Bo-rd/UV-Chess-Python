@@ -63,15 +63,6 @@ def startMenu():
 
 def initPieces():
     print("Initializing pieces...")
-    # pawn = piece.Test(xPos=225, yPos=125, team=None,
-    #                   graphicPath=os.path.join("graphics", "pieces", "blue", "pawnBlue.png"),
-    #                   pieceId="blue pawn", tilesList=TILES, surface=SCREEN)
-    # pawngrn = piece.Test(xPos=125, yPos=225, team=None,
-    #                      graphicPath=os.path.join("graphics", "pieces", "black", "pawnBlack.png"),
-    #                      pieceId="black pawn", tilesList=TILES, surface=SCREEN)
-    # pawn.draw()
-    # pawngrn.draw()
-
     """
     start coordinates =
     [rook, bishop, knight, queen, king, ... , pawn1, pawn2, ...]
@@ -158,9 +149,29 @@ def mainloop():
                     if movingPiece:
                         print("hiding legal moves")
                         movingPiece.hideLegalMoves()
+                        for x in range(ROWS):
+                            for y in range(COLS):
+                                tile = TILES[y][x]
+                            # Check if mouse is under the piece we want
+                                if tile.rect.collidepoint(event.pos):
+                                    print(f"Tile | x: {tile.rect.centerx} | y: {tile.rect.centery}")
+                                    print(movingPiece.setPos(tile.rect.centerx, tile.rect.centery, tile))
+                                    SCREEN.blit(movingPiece.graphic, movingPiece.rect)
+                                    pygame.display.flip()
+                                    print(f"Piece | x: {movingPiece.rect.centerx} | y: {movingPiece.rect.centery}")
+
                         movingPiece.moving = False
+                        print(movingPiece)
+                        movingPiece = None
+
                 elif event.type == pygame.MOUSEMOTION and movingPiece.moving:
                     print("Mouse Moving")
+                    for x in range(ROWS):
+                        for y in range(COLS):
+                            tile = TILES[y][x]
+                            if tile.rect.collidepoint(event.pos):
+                                tile.draw(SCREEN)
+
                     movingPiece.move(event)
 
             pygame.display.update()

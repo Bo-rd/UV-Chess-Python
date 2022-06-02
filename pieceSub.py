@@ -154,7 +154,6 @@ class Pawn(Piece):
             return False
 
         if self.start:
-            print("start")
             if self.team == "White":
                 tile1 = self.tilesList[math.trunc(y / 50)][math.trunc(x / 50)]
                 tile2 = self.tilesList[math.trunc(y / 50)][math.trunc((x + 50) / 50)]
@@ -180,13 +179,11 @@ class Pawn(Piece):
             if newTile is self.tile:
                 print("Same")
             newTile.changeColor(self.surface, (0, 255, 0))
-            print(newTile.color)
             self.validTiles.append(newTile)
 
     def hideLegalMoves(self):
         self.tile.changeColor(surface=self.surface, color=self.tile.color)
         for tile in self.validTiles:
-            print(tile.x, tile.y)
             tile.changeColor(surface=self.surface, color=tile.color)
             self.validTiles = []
 
