@@ -1,4 +1,5 @@
 import pygame
+import handler as HANDLER
 
 class Button():
     def __init__(self, x, y, image):
@@ -7,21 +8,25 @@ class Button():
         self.rect.topleft = (x,y)
         self.clicked = False
 
-    def draw(self, surface):
-        action = False
+    def buttonTick(self):
         #get mouse pos
-        pos = pygame.mouse.get_pos()
+        pos = HANDLER.getMousePos()
+        print(pos)
+        print(self.rect)
 
         #check if mousing over button or clicked button
         if self.rect.collidepoint(pos):
+            print("Mouse on button")
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
-                action = True
 
             if pygame.mouse.get_pressed()[0] == 0:
                 self.clicked = False
 
+
+    def buttonRender(self, surface):
         #drawing to screen
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
-        return action
+    def getClicked(self):
+        return self.clicked

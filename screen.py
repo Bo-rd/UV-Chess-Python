@@ -27,30 +27,28 @@ def startMenu():
     startSplash = pygame.transform.scale(startSplash, img_size)
     start_button = pygame.image.load(r'./graphics/StartButton.png')
     startButton = button.Button(150, 300, start_button)
+    fps = fpstimer.FPSTimer(60)
     while menuRunning:
+        HANDLER.eventHandler()
         SCREEN.fill(white)
         # places splash image on screen
         SCREEN.blit(startSplash, (50, 0))
-        if startButton.draw(SCREEN):
+        if startButton.getClicked():
             HANDLER.createBoard()
+            print("Button Pressed")
             menuRunning = False
+        startButton.buttonTick()
+        startButton.buttonRender(SCREEN)
+        pygame.display.flip()
+        fps.sleep()
 
-        # iterate over the list of Event objects
-        # that was returned by pygame.event.get() method.
-        for event in pygame.event.get():
-            # if event object type is QUIT
-            # then quitting the pygame
-            # and program both.
-            if event.type == pygame.QUIT:
-                # deactivates the pygame library
-                pygame.quit()
-                # quit the program.
-                quit()
-            # Draws the surface object to the screen.
-            pygame.display.update()
-
+bluePlayer = None
+redPlayer = None
+whitePlayer = None
+blackPlayer = None
 
 def initPieces():
+    global whitePlayer, blackPlayer, bluePlayer, redPlayer
     print("Initializing pieces...")
     """
     start coordinates =
@@ -85,88 +83,41 @@ def initPieces():
     blackPlayer = Player("Black Team", "Black", blackStart, HANDLER.getTiles(), SCREEN)
     whitePlayer= Player("White Team", "White", whiteStart, HANDLER.getTiles(), SCREEN)
 
-    out = [] # holds the pieces for mouse tracking
-    out.extend(bluePlayer.getPieces())
-    out.extend(redPlayer.getPieces())
-    out.extend(blackPlayer.getPieces())
-    out.extend(whitePlayer.getPieces())
-
-    return out
-
 
 # this should be used to update every frame
-def tick(movingPiece):
-    if movingPiece is not None:
-        SCREEN.blit(movingPiece.graphic, movingPiece.rect)
+def tick():
+    HANDLER.eventHandler()
+    for x in range(HANDLER.getRows()):
+        for y in range(HANDLER.getCols()):
+            HANDLER.getTiles()[y][x].tick()
+    bluePlayer.playerTick()
+    redPlayer.playerTick()
+    whitePlayer.playerTick()
+    blackPlayer.playerTick()
 
 
 # this should be used to draw every frame
 def render(screen):
+    for x in range(HANDLER.getRows()):
+        for y in range(HANDLER.getCols()):
+            HANDLER.getTiles()[y][x].render(screen)
+    bluePlayer.playerRender(screen)
+    redPlayer.playerRender(screen)
+    blackPlayer.playerRender(screen)
+    whitePlayer.playerRender(screen)
     pygame.display.flip()
 
 
+def initBoard():
+    HANDLER.createBoard()
+
 def mainloop():
-    movingPiece = None
     print("In mainloop...")
+    initBoard()
     fps = fpstimer.FPSTimer(60)
     while True:
-        tick(movingPiece)
+        tick()
         render(SCREEN)
-        for event in pygame.event.get():
-            # if event object type is QUIT
-            # then quitting the pygame
-            # and program both.
-            if event.type == pygame.QUIT:
-                # deactivates the pygame library
-                pygame.quit()
-                # quit the program.
-                quit()
-
-            # Code for moving pieces
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                print("Mouse down")
-                for piece in PIECES:
-                    # Check if mouse is under the piece we want
-                    if piece.rect.collidepoint(event.pos):
-                        print("Found piece")
-                        print(f"{piece}: {piece.showLegalMoves()}")
-                        piece.moving = True
-                        movingPiece = piece
-            if movingPiece:
-                if event.type == pygame.MOUSEBUTTONUP:
-                    print("Mouse Up")
-                    if movingPiece:
-                        print("hiding legal moves")
-                        movingPiece.hideLegalMoves()
-                        for x in range(HANDLER.getRows()):
-                            for y in range(HANDLER.getCols()):
-                                tile = HANDLER.getTiles()[y][x]
-                            # Check if mouse is under the piece we want
-                                if tile.rect.collidepoint(event.pos):
-                                    print(f"Tile | x: {tile.rect.centerx} | y: {tile.rect.centery}")
-                                    print(movingPiece.setPos(tile.rect.centerx, tile.rect.centery, tile))
-                                    SCREEN.blit(movingPiece.graphic, movingPiece.rect)
-                                    pygame.display.flip()
-                                    print(f"Piece | x: {movingPiece.rect.centerx} | y: {movingPiece.rect.centery}")
-
-                        movingPiece.moving = False
-                        print(movingPiece)
-                        movingPiece = None
-
-                elif event.type == pygame.MOUSEMOTION and movingPiece.moving:
-                    print("Mouse Moving")
-                    movingPiece.tile.render(SCREEN)
-                    for x in range(HANDLER.getRows()):
-                        for y in range(HANDLER.getCols()):
-                            tile = HANDLER.getTiles()[y][x]
-                            if tile.rect.collidepoint(event.pos):
-                                tile.render(SCREEN)
-                                movingPiece.tile = tile
-
-                    movingPiece.move(event)
-                    SCREEN.blit(movingPiece.graphic, movingPiece.rect)
-
-            pygame.display.update()
         fps.sleep()
 
 

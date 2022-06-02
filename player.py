@@ -6,7 +6,7 @@ class Player():
     def __init__(self, playerId, team, start, TILES, SCREEN):
         self.id = playerId
         self.team = team # team needs to be capitalized for graphic path
-        
+
         # if checked, valid moves are restricted to unchecking
         self.inCheck = False
 
@@ -45,12 +45,9 @@ class Player():
                   pieceId=self.team + " pawn", tilesList=TILES, surface=SCREEN)
         p8 = Pawn(start[15][0], start[15][1], self.team, path + "pawn" + self.team + ".png",
                   pieceId=self.team + " pawn", tilesList=TILES, surface=SCREEN)
-        
+
         self.pieces = [king, queen, k1, k2, b1, b2, r1, r2, p1, p2, p3, p4, p5, p6, p7, p8]
         self.king = king
-
-        for p in self.pieces:
-            p.draw()
 
     def __str__(self):
         return f"ID: {self.id} Team: {self.team}"
@@ -69,3 +66,10 @@ class Player():
         # if self.king.checked:
         #     self.inCheck = True
         pass
+
+    def playerTick(self):
+        pass
+
+    def playerRender(self, screen):
+        for p in self.pieces:
+            p.draw()

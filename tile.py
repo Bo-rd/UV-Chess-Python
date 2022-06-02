@@ -1,4 +1,5 @@
 import pygame
+import handler as HANDLER
 
 
 class Tile:
@@ -13,6 +14,9 @@ class Tile:
 
         self.hasPiece = False
         self.piece = None
+        self.rect = pygame.Rect(xPos, yPos, self.size, self.size)
+        print("Made rect at: " + str(xPos) + ", " + str(yPos))
+        self.highlighted = False
         # print("Made a tile at: " + str(self.x) + ", " + str(self.y))
 
     def changeColor(self, surface, color):
@@ -36,12 +40,24 @@ class Tile:
         self.piece = None
         self.hasPiece = False
 
+    def getPos(self):
+        return (str(self.x) + ", " + str(self.y))
+
+    def tick(self):
+        if self.rect.collidepoint(HANDLER.getMousePos()):
+            print("Collided")
+            self.highlighted = True
+        else:
+            self.highlighted = False
+        if self.highlighted:
+            print("Hovering over: " + str(self.getPos()))
 
     def render(self, screen):
         gray = (169, 169, 169)
         black = (0, 0, 0)
         white = (255, 255, 255)
         blue = (0, 0, 255)
+        yellow = (255, 255, 0)
         surface = screen
 
         # Makes pattern on board
@@ -73,8 +89,7 @@ class Tile:
             self.rect = pygame.draw.rect(surface, gray, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
             self.active = False
+        elif self.highlighted:
+            pygame.draw.rect(surface, yellow, pygame.Rect(
+                self.x*self.size, self.y*self.size, self.size, self.size))
         # For some reason this draws to the screen, don't ask why I have no idea yet
-
-
-    def getPos(self):
-        print(self.x + ", " + self.y)
