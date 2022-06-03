@@ -1,7 +1,5 @@
 import pygame
 import abc
-import math
-import handler as HANDLER
 
 
 class Piece(abc.ABC):
@@ -19,15 +17,13 @@ class Piece(abc.ABC):
         self.selected = False
         self.moving = False
         self.pieceId = pieceId
-        self.tilesList = HANDLER.getTiles()
-        self.tile = self.tilesList[self.y][self.x]
         self.validTiles = []  # contains a list of valid tiles to move to. Set by showLegalMoves
 
     def __str__(self):
         return f"{self.pieceId} at x: {self.x}, y: {self.y}"
 
     def draw(self):
-        self.surface.blit(self.graphic, self.rect)
+        self.surface.blit(self.graphic, (self.x*50, self.y*50))
 
     @abc.abstractmethod
     def showLegalMoves(self):
@@ -43,13 +39,15 @@ class Piece(abc.ABC):
     def move(self, event):
         self.rect.move_ip(event.rel)
 
-    def setPos(self, x, y, tile):
+    def setPos(self, x, y):
         '''Moves the piece. Returns True if tile moved successfully, False if not'''
+        print("Moved from: " + str(self.x) + ", " + str(self.y))
+        print("Rect: " + str(self.rect))
         self.x = x
         self.y = y
-        print(tile.rect.centery)
-        self.rect.move(x, y)
-        return True
+        self.rect.move(x*50, y*50)
+        print("to: " + str(self.x) + ", " + str(self.y))
+        print("Rect: " + str(self.rect))
 
     def getX(self):
         return self.x

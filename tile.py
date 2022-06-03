@@ -1,5 +1,4 @@
 import pygame
-import handler as HANDLER
 
 
 class Tile:
@@ -11,11 +10,10 @@ class Tile:
         self.rect = None
         # Active is used to check for border or corner tiles
         self.active = True
-
         self.hasPiece = False
         self.piece = None
         self.rect = pygame.Rect(xPos, yPos, self.size, self.size)
-        print("Made rect at: " + str(xPos) + ", " + str(yPos))
+        self.clicked = False
         self.highlighted = False
         # print("Made a tile at: " + str(self.x) + ", " + str(self.y))
 
@@ -29,8 +27,6 @@ class Tile:
         else:
             self.rect = pygame.draw.rect(surface, color, pygame.Rect(
                 self.x * self.size, self.y * self.size, self.size, self.size))
-
-        pygame.display.update()
 
     def putPiece(self, pieceToPlace):
         self.piece = pieceToPlace
@@ -46,8 +42,12 @@ class Tile:
     def getPos(self):
         return (str(self.x) + ", " + str(self.y))
 
+    def getPiece(self):
+        if self.hasPiece:
+            return self.piece
+
     def tick(self):
-        if self.rect.collidepoint(HANDLER.getMousePos()):
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
             self.highlighted = True
         else:
             self.highlighted = False

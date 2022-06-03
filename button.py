@@ -1,5 +1,4 @@
 import pygame
-import handler as HANDLER
 
 class Button():
     def __init__(self, x, y, image):
@@ -10,7 +9,7 @@ class Button():
 
     def buttonTick(self):
         #get mouse pos
-        pos = HANDLER.getMousePos()
+        pos = pygame.mouse.get_pos()
 
         #check if mousing over button or clicked button
         if self.rect.collidepoint(pos):
