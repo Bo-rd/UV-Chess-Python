@@ -77,7 +77,6 @@ def initPieces():
                 (725, 425), (725, 475), (725, 525), (725, 575),
                 (675, 225), (675, 275), (675, 325), (675, 375),
                 (675, 425), (675, 475), (675, 525), (675, 575)]
-
     bluePlayer = Player("Blue Team", "Blue", blueStart, SCREEN)
     #redPlayer = Player("Red Team", "Red", redStart, SCREEN)
     #blackPlayer = Player("Black Team", "Black", blackStart, SCREEN)

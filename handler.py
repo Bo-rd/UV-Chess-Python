@@ -48,6 +48,11 @@ def eventHandler():
             pygame.quit()
             # quit the program.
             quit()
+
+#def mouseManager():
+#    if pygame.mouse.get_pressed()[0] == 1 and
+
+#            if pygame.mouse.get_pressed()[0] == 0:
         #elif event.type == pygame.MOUSEMOTION:
 
 def getMousePos():
@@ -55,14 +60,14 @@ def getMousePos():
     return mousePos
 
 piece_toggle = False
-piece_held = None
+clicked_piece = None
 
-def toggle_ON_piece_held(self, value, clicked_piece):
-    global piece_toggle, piece_held
+def toggle_ON_piece_clicked(self, value, pieceClicked):
+    global piece_toggle, clicked_piece
     piece_toggle = True
-    piece_held = clicked_piece
+    clicked_piece = pieceClicked
 
-def toggle_OFF_piece_held(self):
+def toggle_OFF_piece_clicked(self):
     global piece_toggle, piece_held
     piece_toggle = False
     piece_held = None

@@ -48,12 +48,14 @@ class Piece(abc.ABC):
         self.x = x
         self.y = y
         print(tile.rect.centery)
-        self.rect.centerx = self.x
-        self.rect.centery = self.y
+        self.rect.move(x, y)
         return True
 
-    def getPosition(self):
-        return self.x, self.y
+    def getX(self):
+        return self.x
+
+    def getY(self):
+        return self.y
 
     def getPieceId(self):
         return self.pieceId

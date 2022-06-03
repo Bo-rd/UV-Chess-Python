@@ -11,12 +11,9 @@ class Button():
     def buttonTick(self):
         #get mouse pos
         pos = HANDLER.getMousePos()
-        print(pos)
-        print(self.rect)
 
         #check if mousing over button or clicked button
         if self.rect.collidepoint(pos):
-            print("Mouse on button")
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
 

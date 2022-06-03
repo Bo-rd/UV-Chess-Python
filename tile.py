@@ -40,17 +40,17 @@ class Tile:
         self.piece = None
         self.hasPiece = False
 
+    def getHasPiece(self):
+        return self.hasPiece
+
     def getPos(self):
         return (str(self.x) + ", " + str(self.y))
 
     def tick(self):
         if self.rect.collidepoint(HANDLER.getMousePos()):
-            print("Collided")
             self.highlighted = True
         else:
             self.highlighted = False
-        if self.highlighted:
-            print("Hovering over: " + str(self.getPos()))
 
     def render(self, screen):
         gray = (169, 169, 169)
