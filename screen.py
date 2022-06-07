@@ -71,7 +71,7 @@ def initPieces():
     print("Initializing pieces...")
     """
     start coordinates =
-    [rook, bishop, knight, queen, king, ... , pawn1, pawn2, ...]
+    [rook, knight, bishop, queen, king, ... , pawn1, pawn2, ...]
     Same order in the constructor of Player
 
     We'll probably want to move the player generation into the
@@ -82,29 +82,32 @@ def initPieces():
                 (4, 2), (5, 2), (6, 2), (7, 2),
                 (8, 2), (9, 2), (10, 2), (11, 2)]
 
-    redStart = [(225, 725), (275, 725), (325, 725), (375, 725),
-                (425, 725), (475, 725), (525, 725), (575, 725),
-                (225, 675), (275, 675), (325, 675), (375, 675),
-                (425, 675), (475, 675), (525, 675), (575, 675)]
+    redStart = [(4, 14), (5, 14), (6, 14), (7, 14),
+                (8, 14), (9, 14), (10, 14), (11, 14),
+                (4, 13), (5, 13), (6, 13), (7, 13),
+                (8, 13), (9, 13), (10, 13), (11, 13)]
 
-    blackStart = [(75, 225), (75, 275), (75, 325), (75, 375),
-                (75, 425), (75, 475), (75, 525), (75, 575),
-                (125, 225), (125, 275), (125, 325), (125, 375),
-                (125, 425), (125, 475), (125, 525), (125, 575)]
+    blackStart = [(1, 4), (1, 5), (1, 6), (1, 7),
+                (1, 8), (1, 9), (1, 10), (1, 11),
+                (2, 4), (2, 5), (2, 6), (2, 7),
+                (2, 8), (2, 9), (2, 10), (2, 11)]
 
-    whiteStart = [(725, 225), (725, 275), (725, 325), (725, 375),
-                (725, 425), (725, 475), (725, 525), (725, 575),
-                (675, 225), (675, 275), (675, 325), (675, 375),
-                (675, 425), (675, 475), (675, 525), (675, 575)]
+    whiteStart = [(14, 4), (14, 5), (14, 6), (14, 7),
+                (14, 8), (14, 9), (14, 10), (14, 11),
+                (13, 4), (13, 5), (13, 6), (13, 7),
+                (13, 8), (13, 9), (13, 10), (13, 11)]
+
     bluePlayer = Player("Blue Team", "Blue", blueStart, SCREEN)
-    #redPlayer = Player("Red Team", "Red", redStart, SCREEN)
-    #blackPlayer = Player("Black Team", "Black", blackStart, SCREEN)
-    #whitePlayer= Player("White Team", "White", whiteStart, SCREEN)
+    redPlayer = Player("Red Team", "Red", redStart, SCREEN)
+    blackPlayer = Player("Black Team", "Black", blackStart, SCREEN)
+    whitePlayer= Player("White Team", "White", whiteStart, SCREEN)
 
-    for i in bluePlayer.getPieces():
-        TILES[i.getY()][i.getX()].putPiece(i)
-        i.tile = TILES[i.getY()][i.getX()]
-        print("Put at: " + str(i.getX()) + ", " + str(i.getY()))
+    for player in [bluePlayer, redPlayer, blackPlayer, whitePlayer]:
+        for p in player.getPieces():
+            TILES[p.getY()][p.getX()].putPiece(p)
+            p.tile = TILES[p.getY()][p.getX()]
+            print("Put at: " + str(p.getX()) + ", " + str(p.getY()))
+
 
 def eventHandler():
     global TILES, SAVED_PIECE, PIECE_TOGGLED
@@ -152,9 +155,10 @@ def tick():
         for y in range(COLS):
             TILES[y][x].tick()
     bluePlayer.playerTick()
-    #redPlayer.playerTick()
-    #whitePlayer.playerTick()
-    #blackPlayer.playerTick()
+    redPlayer.playerTick()
+    blackPlayer.playerTick()
+    whitePlayer.playerTick()
+    
 
 
 # this should be used to draw every frame
@@ -164,9 +168,9 @@ def render():
         for y in range(COLS):
             TILES[y][x].render(SCREEN)
     bluePlayer.playerRender(SCREEN)
-    #redPlayer.playerRender(screen)
-    #blackPlayer.playerRender(screen)
-    #whitePlayer.playerRender(screen)
+    redPlayer.playerRender(SCREEN)
+    blackPlayer.playerRender(SCREEN)
+    whitePlayer.playerRender(SCREEN)
     pygame.display.flip()
 
 def mainloop():
