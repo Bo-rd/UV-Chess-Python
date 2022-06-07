@@ -122,24 +122,24 @@ def eventHandler():
             quit()
         elif event.type == pygame.MOUSEBUTTONUP:
             tileX, tileY = screenToTile(mousePos[0], mousePos[1])
-            current_tile = TILES[tileY][tileX]
-            current_tile.getHasPiece()
+            selected_tile = TILES[tileY][tileX]
+            selected_tile.getHasPiece()
 
             print("Checking: " + str(tileX) + ", " + str(tileY))
             print(TILES[tileY][tileX].getHasPiece())
 
             if TILES[tileY][tileX].getHasPiece() and not PIECE_TOGGLED:
                 PIECE_TOGGLED = True
-                SAVED_PIECE = current_tile.getPiece()
-                current_tile.clicked = True
+                SAVED_PIECE = selected_tile.getPiece()
+                selected_tile.clicked = True
                 print("Toggled on")
 
             elif PIECE_TOGGLED:
                 SAVED_PIECE.tile.removePiece()
                 SAVED_PIECE.tile.clicked = False
                 SAVED_PIECE.setPos(tileX, tileY)
-                SAVED_PIECE.tile = current_tile
-                current_tile.putPiece(SAVED_PIECE)
+                SAVED_PIECE.tile = selected_tile
+                selected_tile.putPiece(SAVED_PIECE)
                 PIECE_TOGGLED = False
                 print("Toggled off")
 
