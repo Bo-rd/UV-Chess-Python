@@ -138,13 +138,19 @@ def eventHandler():
                 print("Toggled on")
 
             elif PIECE_TOGGLED:
-                SAVED_PIECE.tile.removePiece()
-                SAVED_PIECE.tile.clicked = False
-                SAVED_PIECE.setPos(tileX, tileY)
-                SAVED_PIECE.tile = selected_tile
-                selected_tile.putPiece(SAVED_PIECE)
-                PIECE_TOGGLED = False
-                print("Toggled off")
+                if (tileX, tileY) == (SAVED_PIECE.getX(), SAVED_PIECE.getY()):
+                    PIECE_TOGGLED = False
+                    SAVED_PIECE.tile.clicked = False
+                    print("No movement, toggle off")
+                    break
+                else:
+                    SAVED_PIECE.tile.removePiece()
+                    SAVED_PIECE.tile.clicked = False
+                    SAVED_PIECE.setPos(tileX, tileY)
+                    SAVED_PIECE.tile = selected_tile
+                    selected_tile.putPiece(SAVED_PIECE)
+                    PIECE_TOGGLED = False
+                    print("Toggled off")
 
 
 # this should be used to update every frame
