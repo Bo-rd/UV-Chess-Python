@@ -1,7 +1,7 @@
 from pieceSub import *
 
-class Player():
 
+class Player:
     def __init__(self, playerId, team, start, SCREEN):
         print("In init")
         self.id = playerId

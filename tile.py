@@ -1,4 +1,5 @@
 import pygame
+import math
 
 
 class Tile:
@@ -18,15 +19,7 @@ class Tile:
         # print("Made a tile at: " + str(self.x) + ", " + str(self.y))
 
     def changeColor(self, surface, color):
-        if color == 1:
-            self.rect = pygame.draw.rect(surface, (255, 255, 255), pygame.Rect(
-                self.x * self.size, self.y * self.size, self.size, self.size))
-        elif color == 2:
-            self.rect = pygame.draw.rect(surface, (0, 0, 0), pygame.Rect(
-                self.x * self.size, self.y * self.size, self.size, self.size))
-        else:
-            self.rect = pygame.draw.rect(surface, color, pygame.Rect(
-                self.x * self.size, self.y * self.size, self.size, self.size))
+        pass
 
     def putPiece(self, pieceToPlace):
         self.piece = pieceToPlace
@@ -40,7 +33,7 @@ class Tile:
         return self.hasPiece
 
     def getPos(self):
-        return (str(self.x) + ", " + str(self.y))
+        return self.x, self.y
 
     def getPiece(self):
         if self.hasPiece:
@@ -58,6 +51,7 @@ class Tile:
         white = (255, 255, 255)
         blue = (0, 0, 255)
         yellow = (255, 255, 0)
+        green = (0, 255, 0)
         surface = screen
 
         # Makes pattern on board
@@ -90,6 +84,20 @@ class Tile:
                 self.x*self.size, self.y*self.size, self.size, self.size))
             self.active = False
         elif self.highlighted:
-            pygame.draw.rect(surface, yellow, pygame.Rect(
+            if self.clicked:
+                pygame.draw.rect(surface, green, pygame.Rect(
+                    self.x * self.size, self.y * self.size, self.size, self.size))
+            else:
+                pygame.draw.rect(surface, yellow, pygame.Rect(
+                    self.x*self.size, self.y*self.size, self.size, self.size))
+        elif self.clicked:
+            pygame.draw.rect(surface, green, pygame.Rect(
                 self.x*self.size, self.y*self.size, self.size, self.size))
+
+
+
+
+
+
+
         # For some reason this draws to the screen, don't ask why I have no idea yet

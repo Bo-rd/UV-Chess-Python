@@ -1,7 +1,6 @@
 import button
 import os
-import piece
-import tile as Tile
+from tile import Tile
 import pygame
 import math
 import sys
@@ -11,106 +10,29 @@ from player import Player
 GAMETILES = []
 (WIDTH, HEIGHT) = (800, 800)
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-CURTEAM = "White"    # Keeps track of whose turn it is
-
-def getScreen():
-    return SCREEN
-
-
+CURTEAM = "White"
 ROWS = 16
 COLS = 16
-
 TILES = [[0 for i in range(COLS)] for j in range(ROWS)]
 
-# creates the chess board
+MOUSEPOS = pygame.mouse.get_pos()
 
-def createBoard():
-    global TILES
-    for x in range(ROWS):
-        for y in range(COLS):
-            TILES[y][x] = Tile.Tile(x, y, x % 2 + y % 2)
-createBoard()
+PIECE_TOGGLED = False
+SAVED_PIECE = None
 
-def getRows():
-    return ROWS
-
-def getCols():
-    return COLS
-
-mousePos = pygame.mouse.get_pos()
-
-piece_toggle = False
+# Coords that keep track of which tile the toggled piece sits on
 saved_x = None
 saved_y = None
 
-def eventHandler():
-    global TILES
-    mousePos = pygame.mouse.get_pos()
+def createBoard():
+    global TILES, ROWS
+    for x in range(ROWS):
+        for y in range(COLS):
+            TILES[y][x] = Tile(x, y, x % 2 + y % 2)
 
-    # iterate over the list of Event objects
-    # that was returned by pygame.event.get() method.
-    for event in pygame.event.get():
-        # if event object type is QUIT
-        # then quitting the pygame
-        # and program both.
-        if event.type == pygame.QUIT:
-            # deactivates the pygame library
-            pygame.quit()
-            # quit the program.
-            quit()
-        elif event.type == pygame.MOUSEBUTTONUP:
-            mouseX, mouseY = mousePos
-            tileX = math.floor(mouseX/50)
-            tileY = math.floor(mouseY/50)
-
-            print("Checking: " + str(tileX) + ", " + str(tileY))
-            print(TILES[tileY][tileX].getHasPiece())
-
-            if TILES[tileY][tileX].getHasPiece() and not piece_toggle:
-                toggle_ON_piece_clicked(tileX, tileY)
-            elif piece_toggle:
-                TILES[saved_y][saved_x].getPiece().setPos(tileX, tileY)
-                TILES[tileY][tileX].putPiece(TILES[saved_y][saved_x].getPiece())
-                TILES[saved_y][saved_x].removePiece()
-                toggle_OFF_piece_clicked()
-
-
-def getMousePos():
-    global mousePos
-    return mousePos
-
-def toggle_ON_piece_clicked(savedXPos, savedYPos):
-    print("Toggled on")
-    global piece_toggle, saved_x, saved_y
-    piece_toggle = True
-    saved_x = savedXPos
-    saved_y = savedYPos
-
-def toggle_OFF_piece_clicked():
-    print("Toggled off")
-    global piece_toggle, saved_x, saved_y
-    piece_toggle = False
-    saved_x = None
-    saved_y = None
-
-def getToggle():
-    global piece_toggle
-    return piece_toggle
-
-def getSavedX():
-    global piece_toggle, saved_x
-    if piece_toggle:
-        return saved_x
-
-def getSavedY():
-    global piece_toggle, saved_y
-    if piece_toggle:
-        return saved_y
-
-def getSavedPiece():
-    global piece_toggle, saved_x, saved_y, TILES
-    if piece_toggle:
-        return TILES[saved_y][saved_x].getPiece()
+def screenToTile(x, y):
+    """Converts screen coordinates to an index in the GAMETILES list"""
+    return math.floor(x/50), math.floor(y/50)
 
 
 def startMenu():
@@ -137,10 +59,12 @@ def startMenu():
         pygame.display.flip()
         fps.sleep()
 
+
 bluePlayer = None
 redPlayer = None
 whitePlayer = None
 blackPlayer = None
+
 
 def initPieces():
     global whitePlayer, blackPlayer, bluePlayer, redPlayer, TILES
@@ -179,15 +103,53 @@ def initPieces():
 
     for i in bluePlayer.getPieces():
         TILES[i.getY()][i.getX()].putPiece(i)
+        i.tile = TILES[i.getY()][i.getX()]
         print("Put at: " + str(i.getX()) + ", " + str(i.getY()))
+
+def eventHandler():
+    global TILES, SAVED_PIECE, PIECE_TOGGLED
+    mousePos = pygame.mouse.get_pos()
+    # iterate over the list of Event objects
+    # that was returned by pygame.event.get() method.
+    for event in pygame.event.get():
+        # if event object type is QUIT
+        # then quitting the pygame
+        # and program both.
+        if event.type == pygame.QUIT:
+            # deactivates the pygame library
+            pygame.quit()
+            # quit the program.
+            quit()
+        elif event.type == pygame.MOUSEBUTTONUP:
+            tileX, tileY = screenToTile(mousePos[0], mousePos[1])
+            current_tile = TILES[tileY][tileX]
+            current_tile.getHasPiece()
+
+            print("Checking: " + str(tileX) + ", " + str(tileY))
+            print(TILES[tileY][tileX].getHasPiece())
+
+            if TILES[tileY][tileX].getHasPiece() and not PIECE_TOGGLED:
+                PIECE_TOGGLED = True
+                SAVED_PIECE = current_tile.getPiece()
+                current_tile.clicked = True
+                print("Toggled on")
+
+            elif PIECE_TOGGLED:
+                SAVED_PIECE.tile.removePiece()
+                SAVED_PIECE.tile.clicked = False
+                SAVED_PIECE.setPos(tileX, tileY)
+                SAVED_PIECE.tile = current_tile
+                current_tile.putPiece(SAVED_PIECE)
+                PIECE_TOGGLED = False
+                print("Toggled off")
 
 
 # this should be used to update every frame
 def tick():
-    global TILES
+    global TILES, ROWS, COLS
     eventHandler()
-    for x in range(getRows()):
-        for y in range(getCols()):
+    for x in range(ROWS):
+        for y in range(COLS):
             TILES[y][x].tick()
     bluePlayer.playerTick()
     #redPlayer.playerTick()
@@ -196,10 +158,10 @@ def tick():
 
 
 # this should be used to draw every frame
-def render(screen):
-    global TILES
-    for x in range(getRows()):
-        for y in range(getCols()):
+def render():
+    global TILES, ROWS, COLS, SCREEN
+    for x in range(ROWS):
+        for y in range(COLS):
             TILES[y][x].render(SCREEN)
     bluePlayer.playerRender(SCREEN)
     #redPlayer.playerRender(screen)
@@ -207,18 +169,14 @@ def render(screen):
     #whitePlayer.playerRender(screen)
     pygame.display.flip()
 
-
-def initBoard():
-    createBoard()
-
 def mainloop():
     print("In mainloop...")
-    initBoard()
+    createBoard()
     initPieces()
     fps = fpstimer.FPSTimer(60)
     while True:
         tick()
-        render(SCREEN)
+        render()
         fps.sleep()
 
 

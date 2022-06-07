@@ -14,9 +14,8 @@ class Piece(abc.ABC):
         self.rect = pygame.Rect(self.x * 50, self.y * 50, 50, 50)
         self.surface = surface
         self.captured = False
-        self.selected = False
-        self.moving = False
         self.pieceId = pieceId
+        self.tile = None
         self.validTiles = []  # contains a list of valid tiles to move to. Set by showLegalMoves
 
     def __str__(self):
