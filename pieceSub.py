@@ -17,6 +17,9 @@ class King(Piece):
         self.hasMoved = False
         self.inCheck = False
 
+    def getLegalMoves(self):
+        pass
+
     def showLegalMoves(self):
         pass
 
@@ -32,6 +35,9 @@ class Queen(Piece):
     '''
     def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
         super().__init__(xPos, yPos, team, graphicPath, pieceId, surface)
+
+    def getLegalMoves(self):
+        pass
 
     def showLegalMoves(self):
         pass
@@ -50,6 +56,9 @@ class Knight(Piece):
     def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
         super().__init__(xPos, yPos, team, graphicPath, pieceId, surface)
 
+    def getLegalMoves(self):
+        pass
+
     def showLegalMoves(self):
         pass
 
@@ -66,6 +75,9 @@ class Bishop(Piece):
     '''
     def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
         super().__init__(xPos, yPos, team, graphicPath, pieceId, surface)
+
+    def getLegalMoves(self):
+        pass
 
     def showLegalMoves(self):
         pass
@@ -92,6 +104,9 @@ class Rook(Piece):
     def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
         super().__init__(xPos, yPos, team, graphicPath, pieceId, surface)
 
+    def getLegalMoves(self):
+        pass
+
     def showLegalMoves(self):
         pass
 
@@ -114,6 +129,9 @@ class Pawn(Piece):
     def __init__(self, xPos, yPos, team, graphicPath, pieceId, surface):
         super().__init__(xPos, yPos, team, graphicPath, pieceId, surface)
         self.start = True
+
+    def getLegalMoves(self):
+        pass
 
     def showLegalMoves(self):
         pass

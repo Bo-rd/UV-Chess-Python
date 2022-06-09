@@ -7,11 +7,15 @@ import pygame
 import sys
 from tile import Tile
 
+bluePlayer = None
+redPlayer = None
+whitePlayer = None
+blackPlayer = None
 
 GAMETILES = []
 (WIDTH, HEIGHT) = (800, 800)
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-CURTEAM = "White"
+CURTEAM = None
 ROWS = 16  # Refers to the number of rows and cols om the board
 COLS = 16
 TILES = [[None for i in range(COLS)] for j in range(ROWS)]
@@ -58,14 +62,8 @@ def startMenu():
         fps.sleep()
 
 
-bluePlayer = None
-redPlayer = None
-whitePlayer = None
-blackPlayer = None
-
-
 def initPieces():
-    global whitePlayer, blackPlayer, bluePlayer, redPlayer, TILES
+    global whitePlayer, blackPlayer, bluePlayer, redPlayer, TILES, CURTEAM
     print("Initializing pieces...")
     """
     start coordinates =
@@ -98,7 +96,7 @@ def initPieces():
     bluePlayer = Player("Blue Team", "Blue", blueStart, SCREEN)
     redPlayer = Player("Red Team", "Red", redStart, SCREEN)
     blackPlayer = Player("Black Team", "Black", blackStart, SCREEN)
-    whitePlayer= Player("White Team", "White", whiteStart, SCREEN)
+    whitePlayer = Player("White Team", "White", whiteStart, SCREEN)
 
     for player in [bluePlayer, redPlayer, blackPlayer, whitePlayer]:
         for p in player.getPieces():
@@ -106,9 +104,11 @@ def initPieces():
             p.tile = TILES[p.getY()][p.getX()]
             print("Put at: " + str(p.getX()) + ", " + str(p.getY()))
 
+    CURTEAM = whitePlayer
+
 
 def eventHandler():
-    global TILES, SAVED_PIECE, PIECE_TOGGLED
+    global TILES, SAVED_PIECE, PIECE_TOGGLED, CURTEAM
     mousePos = pygame.mouse.get_pos()
     # iterate over the list of Event objects
     # that was returned by pygame.event.get() method.
@@ -142,6 +142,7 @@ def eventHandler():
                     print("No movement, toggle off")
                     break
                 else:
+                    #
                     SAVED_PIECE.tile.removePiece()
                     SAVED_PIECE.tile.clicked = False
                     SAVED_PIECE.setPos(tileX, tileY)
