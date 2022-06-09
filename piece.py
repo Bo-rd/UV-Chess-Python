@@ -14,6 +14,7 @@ class Piece(abc.ABC):
         self.rect = pygame.Rect(self.x * 50, self.y * 50, 50, 50)
         self.surface = surface
         self.captured = False
+        self.hasMoved = False
         self.pieceId = pieceId
         self.tile = None
         self.validTiles = []  # contains a list of valid tiles to move to. Set by showLegalMoves
@@ -25,8 +26,15 @@ class Piece(abc.ABC):
         self.surface.blit(self.graphic, (self.x*50, self.y*50))
 
     @abc.abstractmethod
+    def getLegalMoves(self):
+        '''Gets all tiles that are legal moves and adds them to self.validTiles
+        :param orient:
+        '''
+        pass
+
+    @abc.abstractmethod
     def showLegalMoves(self):
-        '''highlights all tiles that are legal moves and adds them to self.validTiles
+        '''highlights all tiles that are legal moves.
         :param orient:
         '''
         pass
@@ -34,9 +42,6 @@ class Piece(abc.ABC):
     @abc.abstractmethod
     def hideLegalMoves(self):
         pass
-
-    def move(self, event):
-        self.rect.move_ip(event.rel)
 
     def setPos(self, x, y):
         '''Moves the piece. Returns True if tile moved successfully, False if not'''

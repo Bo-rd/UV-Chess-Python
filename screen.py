@@ -1,28 +1,26 @@
 import button
-import os
-from tile import Tile
-import pygame
-import math
-import sys
 import fpstimer
-
+import math
+import os
 from player import Player
+import pygame
+import sys
+from tile import Tile
+
+
 GAMETILES = []
 (WIDTH, HEIGHT) = (800, 800)
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 CURTEAM = "White"
-ROWS = 16
+ROWS = 16  # Refers to the number of rows and cols om the board
 COLS = 16
-TILES = [[0 for i in range(COLS)] for j in range(ROWS)]
+TILES = [[None for i in range(COLS)] for j in range(ROWS)]
 
 MOUSEPOS = pygame.mouse.get_pos()
 
 PIECE_TOGGLED = False
 SAVED_PIECE = None
 
-# Coords that keep track of which tile the toggled piece sits on
-saved_x = None
-saved_y = None
 
 def createBoard():
     global TILES, ROWS
@@ -131,7 +129,7 @@ def eventHandler():
             print("Checking: " + str(tileX) + ", " + str(tileY))
             print(TILES[tileY][tileX].getHasPiece())
 
-            if TILES[tileY][tileX].getHasPiece() and not PIECE_TOGGLED:
+            if selected_tile.getHasPiece() and not PIECE_TOGGLED:
                 PIECE_TOGGLED = True
                 SAVED_PIECE = selected_tile.getPiece()
                 selected_tile.clicked = True
