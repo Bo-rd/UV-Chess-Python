@@ -12,7 +12,7 @@ Andrew P -- Christopher Wilkinson -- Joshua Kitchen -- Max Diamond -- Seth Bird
 """ The Node type object that holds player's info for our doubly linked list """
 import copy
 
-class ChesPlayerObject:
+class ChessPlayerObject:
     def __init__(self, name, gameColor, colorCode, number, nextPlayer = None, previousPlayer = None) -> None:
        self.name = name
        self.gameColor = gameColor
@@ -45,10 +45,10 @@ userPlayerNames = ["Alpha", "Bravo", "Charlie", "Delta"] # If we want to impleme
 
 # This creates a linked list to keep the player's info and to make switching easier.
 playerList = GamePlayers()
-whitePlayer = ChesPlayerObject(userPlayerNames[0], "White", "w", 0, nextPlayer = None,  previousPlayer = None)
-redPlayer = ChesPlayerObject(userPlayerNames[1], "Red", "r", 1, nextPlayer = None,  previousPlayer = whitePlayer)
-blackPlayer = ChesPlayerObject(userPlayerNames[2], "Black", "b", 2, nextPlayer = None,  previousPlayer = redPlayer)
-bluePlayer = ChesPlayerObject(userPlayerNames[3], "Blue", "l", 3, nextPlayer = None,  previousPlayer = blackPlayer)
+whitePlayer = ChessPlayerObject(userPlayerNames[0], "White", "w", 0, nextPlayer = None,  previousPlayer = None)
+redPlayer = ChessPlayerObject(userPlayerNames[1], "Red", "r", 1, nextPlayer = None,  previousPlayer = whitePlayer)
+blackPlayer = ChessPlayerObject(userPlayerNames[2], "Black", "b", 2, nextPlayer = None,  previousPlayer = redPlayer)
+bluePlayer = ChessPlayerObject(userPlayerNames[3], "Blue", "l", 3, nextPlayer = None,  previousPlayer = blackPlayer)
 
 # Since some objects are not created until after these needed to be manually put in.
 whitePlayer.nextPlayer = redPlayer
