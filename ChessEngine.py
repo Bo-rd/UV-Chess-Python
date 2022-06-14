@@ -138,9 +138,11 @@ class GameState():
 
     """All moves considering checks"""
     def getValidMoves(self):
+        """
         boardBackup = copy.deepcopy(self.board) #Copy of the current game board.
-
+        """
         moves = self.getAllPossibleMoves() # Generates the move list for the player like normal.
+        """
         attackerMoveList = [] # To hold potential attacker moves.
         for i in range(len(moves)-1, -1, -1): # Goes through that list backwards.
             self.getValidMovesHelper(moves[i]) # Moves one piece per loop of the origin color.
@@ -162,6 +164,7 @@ class GameState():
 
             self.board = copy.deepcopy(boardBackup) # Restores the board.
         self.board = copy.deepcopy(boardBackup) # Restores the board.
+        """
         return moves 
 
     """ Determines if the current player is in check """
