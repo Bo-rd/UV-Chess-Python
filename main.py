@@ -104,6 +104,10 @@ def main():
                     if (row <= 3 and col <= 3) or (row >= 12 and col <= 3) or (row <= 3 and col >= 12) or (row >= 12 and col >= 12):
                         print("User clicked on a black corner")
 
+                    # Same as above, but works for borders.
+                    if (row == 0 or row == 15) or (col == 0 or col ==15):
+                        print("User clicked on a border")
+
                     # This appends for both the first and second clicks.
                     else:
                         sqSelected = (row, col)
