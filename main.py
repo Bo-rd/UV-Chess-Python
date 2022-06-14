@@ -119,6 +119,10 @@ def main():
                 if len(playerClicks) == 2:
                     selectedMove = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
                     
+                    if len(validMoves) == 0:
+                        print("Checkmate")
+                        # need code to remove current player/pieces and cycle turn
+
                     # If legal makes the move.
                     if selectedMove in validMoves:
                         print("Rank & File Notation:" + selectedMove.getChessNotation() + "\n") #Prints out the chess notation to the console.
