@@ -46,16 +46,16 @@ userPlayerNames = ["Alpha", "Bravo", "Charlie", "Delta"] # If we want to impleme
 # This creates a linked list to keep the player's info and to make switching easier.
 playerList = GamePlayers()
 whitePlayer = ChesPlayerObject(userPlayerNames[0], "White", "w", 0, nextPlayer = None,  previousPlayer = None)
-bluePlayer = ChesPlayerObject(userPlayerNames[1], "Blue", "l", 1, nextPlayer = None,  previousPlayer = whitePlayer)
-blackPlayer = ChesPlayerObject(userPlayerNames[2], "Black", "b", 2, nextPlayer = None,  previousPlayer = bluePlayer)
-redPlayer = ChesPlayerObject(userPlayerNames[3], "Red", "r", 3, nextPlayer = None,  previousPlayer = blackPlayer)
+redPlayer = ChesPlayerObject(userPlayerNames[1], "Red", "r", 1, nextPlayer = None,  previousPlayer = whitePlayer)
+blackPlayer = ChesPlayerObject(userPlayerNames[2], "Black", "b", 2, nextPlayer = None,  previousPlayer = redPlayer)
+bluePlayer = ChesPlayerObject(userPlayerNames[3], "Blue", "l", 3, nextPlayer = None,  previousPlayer = blackPlayer)
 
 # Since some objects are not created until after these needed to be manually put in.
-whitePlayer.nextPlayer = bluePlayer
-bluePlayer.nextPlayer = blackPlayer
-blackPlayer.nextPlayer = redPlayer
-redPlayer.nextPlayer = whitePlayer
-whitePlayer.previousPlayer = redPlayer
+whitePlayer.nextPlayer = redPlayer
+redPlayer.nextPlayer = blackPlayer
+blackPlayer.nextPlayer = bluePlayer
+bluePlayer.nextPlayer = whitePlayer
+whitePlayer.previousPlayer = bluePlayer
 
 # This starts off the doubly linked list with the starting player.
 playerList.currentPlayer = whitePlayer
@@ -70,14 +70,14 @@ class GameState():
             ["--","--","--","--","bR","bN","bB","bQ","bK","bB","bN","bR","--","--","--","--"],
             ["--","--","--","--","bp","bp","bp","bp","bp","bp","bp","bp","--","--","--","--"],
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
-            ["--","lR","lp","--","--","--","--","--","--","--","--","--","--","rp","rR","--"],
-            ["--","lN","lp","--","--","--","--","--","--","--","--","--","--","rp","rN","--"],
-            ["--","lB","lp","--","--","--","--","--","--","--","--","--","--","rp","rB","--"],
-            ["--","lQ","lp","--","--","--","--","--","--","--","--","--","--","rp","rQ","--"],
-            ["--","lK","lp","--","--","--","--","--","--","--","--","--","--","rp","rK","--"],
-            ["--","lB","lp","--","--","--","--","--","--","--","--","--","--","rp","rB","--"],
-            ["--","lN","lp","--","--","--","--","--","--","--","--","--","--","rp","rN","--"],
-            ["--","lR","lp","--","--","--","--","--","--","--","--","--","--","rp","rR","--"],
+            ["--","rR","rp","--","--","--","--","--","--","--","--","--","--","lp","lR","--"],
+            ["--","rN","rp","--","--","--","--","--","--","--","--","--","--","lp","lN","--"],
+            ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lp","lB","--"],
+            ["--","rQ","rp","--","--","--","--","--","--","--","--","--","--","lp","lQ","--"],
+            ["--","rK","rp","--","--","--","--","--","--","--","--","--","--","lp","lK","--"],
+            ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lp","lB","--"],
+            ["--","rN","rp","--","--","--","--","--","--","--","--","--","--","lp","lN","--"],
+            ["--","rR","rp","--","--","--","--","--","--","--","--","--","--","lp","lR","--"],
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
             ["--","--","--","--","wp","wp","wp","wp","wp","wp","wp","wp","--","--","--","--"],
             ["--","--","--","--","wR","wN","wB","wQ","wK","wB","wN","wR","--","--","--","--"],
@@ -85,12 +85,12 @@ class GameState():
         ]
 
         self.whiteKingLocation = (14, 8)
-        self.blueKingLocation = (8, 1)
+        self.redKingLocation = (8, 1)
         self.blackKingLocation = (1, 8)
-        self.redKingLocation = (8, 14)
+        self.blueKingLocation = (8, 14)
 
         self.moveFunctions = {'p': self.getPawnMoves, "R": self.getRookMoves, "N": self.getKnightMoves, "B": self.getBishopMoves, "Q": self.getQueenMoves, "K": self.getKingMoves}
-        self.currentPlayerPrintout = {0:"It is White's Turn", 1:"It is Blue's Turn", 2:"It is Black's Turn", 3:"It is Red's Turn"}
+        self.currentPlayerPrintout = {0:"It is White's Turn", 1:"It is Red's Turn", 2:"It is Black's Turn", 3:"It is Blue's Turn"}
         print(self.currentPlayerPrintout[playerList.currentPlayer.number]) # Prints out initial starting player
         self.moveLog = []
         # Print player name change on change
@@ -99,12 +99,12 @@ class GameState():
         # Updates the King's Position tuple if needed.
         if move.pieceMoved == "wK":
             self.whiteKingLocation = (move.endRow, move.endColumn)
-        if move.pieceMoved == "lK":
-            self.blueKingLocation = (move.endRow, move.endColumn)
-        if move.pieceMoved == "bK":
-            self.blackKingLocation = (move.endRow, move.endColumn)
         if move.pieceMoved == "rK":
             self.redKingLocation = (move.endRow, move.endColumn)
+        if move.pieceMoved == "bK":
+            self.blackKingLocation = (move.endRow, move.endColumn)
+        if move.pieceMoved == "lK":
+            self.blueKingLocation = (move.endRow, move.endColumn)
 
     """ Moves a chess piece """
     def makeMove(self, move):
@@ -174,13 +174,13 @@ class GameState():
             return (row == self.whiteKingLocation[0]) and (column == self.whiteKingLocation[1])
         
         if playerList.currentPlayer.number == 1:
-            return (row == self.blueKingLocation[0]) and (column == self.blueKingLocation[1])   
+            return (row == self.redKingLocation[0]) and (column == self.redKingLocation[1])   
 
         if playerList.currentPlayer.number == 2:
             return (row == self.blackKingLocation[0]) and (column == self.blackKingLocation[1])
 
         if playerList.currentPlayer.number == 3:
-            return (row == self.redKingLocation[0]) and (column == self.redKingLocation[1])
+            return (row == self.blueKingLocation[0]) and (column == self.blueKingLocation[1])
 
 
     """All moves without consideriding checks"""
@@ -190,7 +190,7 @@ class GameState():
             for column in range(len(self.board[row])):
                 # This calculates moves only for the current players pieces.
                 turn = self.board[row][column][0] # Index 0 is the color/player position on the board.
-                if (turn == 'w' and playerList.currentPlayer.number == 0) or (turn == 'l' and playerList.currentPlayer.number == 1) or (turn == 'b' and playerList.currentPlayer.number == 2) or (turn == 'r' and playerList.currentPlayer.number == 3):
+                if (turn == 'w' and playerList.currentPlayer.number == 0) or (turn == 'r' and playerList.currentPlayer.number == 1) or (turn == 'b' and playerList.currentPlayer.number == 2) or (turn == 'l' and playerList.currentPlayer.number == 3):
                     piece = self.board[row][column][1] # Index 1 is the piece type.
                     self.moveFunctions[piece](row, column, moves) # Calls move function for specific piece
         return moves
@@ -220,7 +220,7 @@ class GameState():
                 if (self.board[row-1][column+1][0] != '-') and (self.board[row-1][column+1][0] != 'w'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row-1, column+1), self.board))
 
-        """ Player 1 is blue. This logic is for BLUE Pawns. """
+        """ Player 1 is red. This logic is for RED Pawns. """
         if playerList.currentPlayer.number == 1: 
             if self.board[row][column+1] == "--":
                 moves.append(Move((row, column), (row, column+1), self.board))
@@ -228,11 +228,11 @@ class GameState():
                     moves.append(Move((row, column), (row, column+2), self.board))
             #Captures upward
             if row-1 >=1: #Bounds checking
-                if (self.board[row-1][column+1][0] != '-') and (self.board[row-1][column+1][0] != 'l'): #Make sure not capturing self or empty
+                if (self.board[row-1][column+1][0] != '-') and (self.board[row-1][column+1][0] != 'r'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row-1, column+1), self.board))
             #Captures downward 
             if row+1 <=14: #Bounds checking
-                if (self.board[row+1][column+1][0] != '-') and (self.board[row+1][column+1][0] != 'l'): #Make sure not capturing self or empty
+                if (self.board[row+1][column+1][0] != '-') and (self.board[row+1][column+1][0] != 'r'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row+1, column+1), self.board))
 
         """ Player 2 is black. This logic is for BLACK Pawns. """
@@ -250,7 +250,7 @@ class GameState():
                 if (self.board[row+1][column+1][0] != '-') and (self.board[row+1][column+1][0] != 'b'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row+1, column+1), self.board))
 
-        """ Player 3 is red. This logic is for RED Pawns. """
+        """ Player 3 is blue. This logic is for BLUE Pawns. """
         if playerList.currentPlayer.number == 3: 
             if self.board[row][column-1] == "--":
                 moves.append(Move((row, column), (row, column-1), self.board))
@@ -258,11 +258,11 @@ class GameState():
                     moves.append(Move((row, column), (row, column-2), self.board))
             #Captures upward
             if row-1 >=1: #Bounds checking
-                if (self.board[row-1][column-1][0] != '-') and (self.board[row-1][column-1][0] != 'r'): #Make sure not capturing self or empty
+                if (self.board[row-1][column-1][0] != '-') and (self.board[row-1][column-1][0] != 'l'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row-1, column-1), self.board))
             #Captures downward 
             if row+1 <=14: #Bounds checking
-                if (self.board[row+1][column-1][0] != '-') and (self.board[row+1][column-1][0] != 'r'): #Make sure not capturing self or empty
+                if (self.board[row+1][column-1][0] != '-') and (self.board[row+1][column-1][0] != 'l'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row+1, column-1), self.board))                    
 
     def getRookMoves(self, row, column ,moves):

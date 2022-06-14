@@ -29,8 +29,8 @@ DARK_TILE_COLOR = pygame.Color(53, 44, 35)
 LIGHT_TILE_COLOR = pygame.Color(192, 158, 121)
 SMALL_CORNER_COLOR = pygame.Color(89, 89, 89)
 LARGE_CORNER_COLOR = pygame.Color(120, 120, 120)
-HOVER_COLOR = pygame.Color(252, 186, 3)
-SELECTED_COLOR = pygame.Color(3, 157, 252)
+HOVER_COLOR = pygame.Color(3, 157, 252)
+SELECTED_COLOR = pygame.Color(252, 186, 3)
 WHITE_BORDER_COLOR = pygame.Color(255, 255, 255)
 LINE_STROKE_COLOR = pygame.Color(0, 0, 0)
 font = pygame.font.Font(None, 25)
@@ -40,7 +40,6 @@ IMAGES = {}
 def loadImages():
     pieces = ["bR","bN","bB","bQ","bK","bp","wR","wN","wB","wQ","wK","wp","lR","lN","lB","lQ","lK","lp","rR","rN","rB","rQ","rK","rp"]
     for piece in pieces:
-        #window_icon = pygame.image.load(os.path.join('images', 'window_icon.png'))
         IMAGES[piece] = pygame.transform.scale(pygame.image.load(os.path.join("images/" + piece + ".png")), (SQUARE_SIZE * GAME_PIECE_SCALER ,SQUARE_SIZE * GAME_PIECE_SCALER))
 
 """ Main Driver for our chess game"""
@@ -52,7 +51,7 @@ def main():
     global playerClicks; playerClicks = [] # Keeps track of player clicks (two tuples: [(6,4), (4,4)])
    
     # The purpose of those six annoying global statements is so we can just call this function to reset the values later on.
-    def resetStorageVars():
+    def resetStorageVariables():
         global selectedTile; selectedTile = (0,0)
         global sqSelected; sqSelected = ()
         global playerClicks; playerClicks = []        
@@ -89,15 +88,15 @@ def main():
 
                 # If the player clicks on the original tile a second time it will deselect.
                 if sqSelected == (row, col):
-                    resetStorageVars()
+                    resetStorageVariables()
 
                 # This is used to make clicking on an empty space "--" for your first click do nothing.
                 elif gs.board[row][col] == "--" and len(playerClicks) == 0:
-                    resetStorageVars()
+                    resetStorageVariables()
 
                 # Prohibits clicking on other player's pieces.
                 elif len(playerClicks) == 0 and (gs.board[row][col][0] != ChessEngine.playerList.currentPlayer.colorCode):
-                    resetStorageVars()
+                    resetStorageVariables()
 
                 # Stores the click into our variables.
                 else:                 
@@ -121,12 +120,12 @@ def main():
                         print("Rank & File Notation:" + selectedMove.getChessNotation() + "\n") #Prints out the chess notation to the console.
                         gs.makeMove(selectedMove)
                         moveMade = True
-                        resetStorageVars()
+                        resetStorageVariables()
 
                     # If illeagal resets.
                     else:
                         print("Illegal Move, try again.")
-                        resetStorageVars()
+                        resetStorageVariables()
 
 
                 """ KEY PRESS HANDLERS """
@@ -134,7 +133,7 @@ def main():
             elif gameEvent.type == pygame.KEYDOWN:
                 if gameEvent.key == pygame.K_z:
                     gs.undoMove()
-                    resetStorageVars()
+                    resetStorageVariables()
                     moveMade = True
 
         # Once a move is made (board has changed). This recalculates the valid moves on the board again.
