@@ -21,7 +21,7 @@ HEIGHT = 1000
 NUM_OF_HORIZONTAL_SQUARES = 16
 SQUARE_SIZE = HEIGHT // NUM_OF_HORIZONTAL_SQUARES
 
-TILE_SCALER = 1 # This is not yet properly implemented but I figured if we wanted to shrink the pieces we could use this. (Changing the number now shrinks but to the corner not center)
+GAME_PIECE_SCALER = 0.75 # A value 0-1 to scale the game piece to the tile.
 
 MAX_FPS = 60
 
@@ -41,7 +41,7 @@ def loadImages():
     pieces = ["bR","bN","bB","bQ","bK","bp","wR","wN","wB","wQ","wK","wp","lR","lN","lB","lQ","lK","lp","rR","rN","rB","rQ","rK","rp"]
     for piece in pieces:
         #window_icon = pygame.image.load(os.path.join('images', 'window_icon.png'))
-        IMAGES[piece] = pygame.transform.scale(pygame.image.load(os.path.join("images/" + piece + ".png")), (SQUARE_SIZE *TILE_SCALER ,SQUARE_SIZE * TILE_SCALER))
+        IMAGES[piece] = pygame.transform.scale(pygame.image.load(os.path.join("images/" + piece + ".png")), (SQUARE_SIZE * GAME_PIECE_SCALER ,SQUARE_SIZE * GAME_PIECE_SCALER))
 
 """ Main Driver for our chess game"""
 def main():
@@ -212,7 +212,7 @@ def drawPieces(screen, board):
         for column in range(NUM_OF_HORIZONTAL_SQUARES):
             piece = board[row][column]
             if piece != "--":
-                screen.blit(IMAGES[piece], pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                screen.blit(IMAGES[piece], pygame.Rect((column * SQUARE_SIZE)+(SQUARE_SIZE*(1-GAME_PIECE_SCALER)/2), (row * SQUARE_SIZE)+(SQUARE_SIZE*(1-GAME_PIECE_SCALER)/2), (SQUARE_SIZE), (SQUARE_SIZE)))
 
 def drawNumAndLetters(screen):
     # Top Pannel

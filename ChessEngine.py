@@ -98,7 +98,6 @@ class GameState():
     def updateKing(self, move):
         # Updates the King's Position tuple if needed.
         if move.pieceMoved == "wK":
-            print("Wooo hooooa")
             self.whiteKingLocation = (move.endRow, move.endColumn)
         if move.pieceMoved == "lK":
             self.blueKingLocation = (move.endRow, move.endColumn)
