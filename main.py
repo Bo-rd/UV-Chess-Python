@@ -10,7 +10,7 @@ import pygame
 import ChessEngine
 import os
 pygame.init() # I read it is wise to initialize pygame right away.
-pygame.display.set_caption('4 Player Chess - Summer 2022')
+pygame.display.set_caption('UVChess - 4 Player Chess - Summer 2022')
 window_icon = pygame.image.load(os.path.join('images', 'window_icon.png'))
 pygame.display.set_icon(window_icon)
 
@@ -25,11 +25,11 @@ TILE_SCALER = 1 # This is not yet properly implemented but I figured if we wante
 
 MAX_FPS = 60
 
-DARK_TILE_COLOR = pygame.Color("gray")
-LIGHT_TILE_COLOR = pygame.Color("white")
+DARK_TILE_COLOR = pygame.Color(53, 44, 35)
+LIGHT_TILE_COLOR = pygame.Color(192, 158, 121)
 BLACKED_OUT_CORNER_COLOR = pygame.Color("black")
-HOVER_COLOR = pygame.Color("green")
-SELECTED_COLOR = pygame.Color("orange")
+HOVER_COLOR = pygame.Color(252, 186, 3)
+SELECTED_COLOR = pygame.Color(3, 157, 252)
 
 # Helps load all the images into memory once. Also makes it easier to swap different piece images without retyping everything (Ex: Wood Piece image files)
 IMAGES = {}
