@@ -106,7 +106,7 @@ def main():
 
                     # This appends for both the first and second clicks.
                     else:
-                        sqSelected = (row, col) 
+                        sqSelected = (row, col)
                         playerClicks.append(sqSelected)
 
                         selectedTile = sqSelected # For coloring.
@@ -151,6 +151,7 @@ def main():
     pygame.quit()
     quit()
 
+
 def drawSquare( color, row, column, screen, stroke = True):
     if stroke:
         pygame.draw.rect(screen, color, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
@@ -159,21 +160,17 @@ def drawSquare( color, row, column, screen, stroke = True):
         pygame.draw.rect(screen, color, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
 
-
 """ Displayes the current coloring of the board. The colors can be configured in the constants at the top."""
 def drawBoard(selectedTile, hoverTile, screen):
     # Double for loop to go through all the rows and columns.
     for row in range(NUM_OF_HORIZONTAL_SQUARES):
         for column in range(NUM_OF_HORIZONTAL_SQUARES):
 
-
-
             if (row == 0) or (row == 15) or (column == 0) or (column == 15):
                 if (row == 0 and column == 0) or (row == 15 and column == 0) or (row == 0 and column == 15) or (row == 15 and column == 15):
                     drawSquare(SMALL_CORNER_COLOR, row, column, screen)
                 else:
                     drawSquare(WHITE_BORDER_COLOR, row, column, screen)
-
 
             # This code looks for the 3X3 corners and changes them to the SMALL_CORNER_COLOR.
             elif (row <= 3 and column <= 3) or (row >= 12 and column <= 3) or (row <= 3 and column >= 12) or (row >= 12 and column >= 12):
@@ -206,17 +203,19 @@ def drawBoard(selectedTile, hoverTile, screen):
             pygame.draw.rect(screen, LARGE_CORNER_COLOR, pygame.Rect(12 * SQUARE_SIZE, 12 * SQUARE_SIZE, SQUARE_SIZE*3, SQUARE_SIZE*3))
             pygame.draw.rect(screen, LINE_STROKE_COLOR, pygame.Rect(12 * SQUARE_SIZE, 12 * SQUARE_SIZE, SQUARE_SIZE*3, SQUARE_SIZE*3),2)
 
+
+""" Draw the pieces to the board by accessing the 2D board array. Only draw squares with pieces. """
 def drawPieces(screen, board):
+
     for row in range(NUM_OF_HORIZONTAL_SQUARES):
         for column in range(NUM_OF_HORIZONTAL_SQUARES):
             piece = board[row][column]
             if piece != "--":
                 screen.blit(IMAGES[piece], pygame.Rect((column * SQUARE_SIZE)+(SQUARE_SIZE*(1-GAME_PIECE_SCALER)/2), (row * SQUARE_SIZE)+(SQUARE_SIZE*(1-GAME_PIECE_SCALER)/2), (SQUARE_SIZE), (SQUARE_SIZE)))
 
+""" Draw the row and column indicators in numeric/alpha according to the standard 4P chess layout. """
 def drawNumAndLetters(screen):
-    """
-    Draw the row and column indicators in numeric/alpha according to the standard 4P chess layout.
-    """
+
     
     ch = 97 # ascii 'a' = 97 
     for i in range(14):
@@ -237,6 +236,7 @@ def drawNumAndLetters(screen):
         screen.blit(text_alpha, text_rect_bottom)
         screen.blit(text_num, text_rect_left)
         screen.blit(text_num, text_rect_right)
+
 
 if __name__ == "__main__":
     main()
