@@ -100,7 +100,7 @@ def main():
 
                 # Stores the click into our variables.
                 else:                 
-                    # This checks if the user clicked in a black corner. If so It will print to console and do nothing waiting for a valid move.
+                    # This checks if the user clicked in a black corner. If so it will print to console and do nothing waiting for a valid move.
                     if (row <= 3 and col <= 3) or (row >= 12 and col <= 3) or (row <= 3 and col >= 12) or (row >= 12 and col >= 12):
                         print("User clicked on a black corner")
 
@@ -115,14 +115,14 @@ def main():
                 if len(playerClicks) == 2:
                     selectedMove = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
                     
-                    # If leagal makes the move.
+                    # If legal makes the move.
                     if selectedMove in validMoves:
                         print("Rank & File Notation:" + selectedMove.getChessNotation() + "\n") #Prints out the chess notation to the console.
                         gs.makeMove(selectedMove)
                         moveMade = True
                         resetStorageVariables()
 
-                    # If illeagal resets.
+                    # If illegal resets.
                     else:
                         print("Illegal Move, try again.")
                         resetStorageVariables()
@@ -139,8 +139,9 @@ def main():
         # Once a move is made (board has changed). This recalculates the valid moves on the board again.
         if moveMade:
             validMoves = gs.getValidMoves()
-            for i in validMoves: #Uncomment for verbose printing valid moves
-                print(i.startRow, i.startCol, i.endRow, i.endColumn, i.pieceMoved, i.pieceCaptured, i.moveID)
+            # Uncomment for verbose printing valid moves
+            #for i in validMoves:
+            #    print(i.startRow, i.startCol, i.endRow, i.endColumn, i.pieceMoved, i.pieceCaptured, i.moveID)
             moveMade = False
 
         # Draws the game  
