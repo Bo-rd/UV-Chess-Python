@@ -139,8 +139,8 @@ def main():
         # Once a move is made (board has changed). This recalculates the valid moves on the board again.
         if moveMade:
             validMoves = gs.getValidMoves()
-            #for i in validMoves: #Uncomment for verbose printing valid moves
-            #    print(i.startRow, i.startCol, i.endRow, i.endColumn, i.pieceMoved, i.pieceCaptured, i.moveID)
+            for i in validMoves: #Uncomment for verbose printing valid moves
+                print(i.startRow, i.startCol, i.endRow, i.endColumn, i.pieceMoved, i.pieceCaptured, i.moveID)
             moveMade = False
 
         # Draws the game  

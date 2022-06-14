@@ -14,8 +14,8 @@ import copy
 
 class ChesPlayerObject:
     def __init__(self, name, gameColor, colorCode, number, nextPlayer = None, previousPlayer = None) -> None:
-       self.name = name #"A Player"
-       self.gameColor = gameColor #"Blue"
+       self.name = name
+       self.gameColor = gameColor
        self.colorCode = colorCode
        self.number = number
        self.nextPlayer = nextPlayer
@@ -75,7 +75,7 @@ class GameState():
             ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lp","lB","--"],
             ["--","rQ","rp","--","--","--","--","--","--","--","--","--","--","lp","lQ","--"],
             ["--","rK","rp","--","--","--","--","--","--","--","--","--","--","lp","lK","--"],
-            ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lp","lB","--"],
+            ["--","rB","rp","--","--","--","--","--","--","--","--","rB","--","lp","lB","--"],
             ["--","rN","rp","--","--","--","--","--","--","--","--","--","--","lp","lN","--"],
             ["--","rR","rp","--","--","--","--","--","--","--","--","--","--","lp","lR","--"],
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
@@ -133,19 +133,31 @@ class GameState():
             print(self.currentPlayerPrintout[playerList.currentPlayer.number]) # Prints new players turn
 
     # Helper function for getValidMoves. Does same thing as makeMove() but does not change player and log and stuff.
+
     def getValidMovesHelper(self, move):
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endColumn] = move.pieceMoved
+        self.updateKing(move)
+
+
 
     """All moves considering checks"""
     def getValidMoves(self):
-        """
-        boardBackup = copy.deepcopy(self.board) #Copy of the current game board.
-        """
-        moves = self.getAllPossibleMoves() # Generates the move list for the player like normal.
-        """
+        validMoves = [] # To return valid moves.
         attackerMoveList = [] # To hold potential attacker moves.
-        for i in range(len(moves)-1, -1, -1): # Goes through that list backwards.
+        
+        boardBackup = copy.deepcopy(self.board) #Copy of the current game board.
+        
+        # Holds the original king location to restore after checking for checks
+        temp1 = self.whiteKingLocation 
+        temp2 = self.redKingLocation
+        temp3 = self.blackKingLocation
+        temp4 = self.blueKingLocation 
+
+        moves = self.getAllPossibleMoves() # Generates the move list for the player like normal.      
+    
+        for i in range(len(moves)-1,-1,-1): # Goes through that list backwards.
+            attackerMoveList = []
             self.getValidMovesHelper(moves[i]) # Moves one piece per loop of the origin color.
 
             # Adds the next three player's moves into the attackerMoveList list.
@@ -157,16 +169,23 @@ class GameState():
             attackerMoveList += self.getAllPossibleMoves()
             playerList.nextPlayer() #The fourth one just returns back to the right player order.
 
+            testFlag = True
             # Loops through potential other player's moves
             for attackerMove in attackerMoveList:                
                 if self.inCheck(attackerMove.endRow, attackerMove.endColumn): # If an other piece puts you into check....
-                    moves.remove(moves[-1]) #remove the potential move from the move list
-                    break # Short circut evaluation. No need to keep calculating.
-
+                    testFlag = False
+                if testFlag == False:
+                    break
+            if testFlag == True:
+                validMoves.append(moves[i])
             self.board = copy.deepcopy(boardBackup) # Restores the board.
         self.board = copy.deepcopy(boardBackup) # Restores the board.
-        """
-        return moves 
+        # Restores the original king locations
+        self.whiteKingLocation  = temp1
+        self.redKingLocation = temp2
+        self.blackKingLocation = temp3
+        self.blueKingLocation  = temp4
+        return validMoves 
 
     """ Determines if the current player is in check """
     def inCheck(self, row, column):
@@ -196,7 +215,7 @@ class GameState():
         return moves
 
     # Returnes True if coords are in the 14X14 board AND not in one of those corner spots.
-    def onGameBoardSquare(self, endRow, endColumn):
+    def isInsideGameGrid(self, endRow, endColumn):
         if 1 <= endRow <= 14 and 1 <= endColumn <= 14 and not ((endRow <= 3 and endColumn <= 3) or (endRow >= 12 and endColumn <= 3) or (endRow <= 3 and endColumn >= 12) or (endRow >= 12 and endColumn >= 12)):
             return True
         return False
@@ -269,10 +288,10 @@ class GameState():
         directions = ((-1,0), (0,-1), (1,0), (0,1)) #up, left, down, right
         rookColor = self.board[row][column][0]
         for searchDirection in directions:
-            for index in range(2, 15):
+            for index in range(1, 14):
                 endRow = row + searchDirection[0] * index
                 endColumn = column + searchDirection[1] * index
-                if self.onGameBoardSquare(endRow, endColumn):
+                if self.isInsideGameGrid(endRow, endColumn):
                     endPiece = self.board[endRow][endColumn]
                     if endPiece == "--":
                         moves.append(Move((row, column), (endRow, endColumn), self.board))
@@ -290,7 +309,7 @@ class GameState():
         for m in knightMoves:
             endRow = row + m[0]
             endColumn = column + m[1]
-            if self.onGameBoardSquare(endRow, endColumn):
+            if self.isInsideGameGrid(endRow, endColumn):
                 endPiece = self.board[endRow][endColumn]
                 if endPiece[0] != knightColor:
                     moves.append(Move((row, column), (endRow, endColumn), self.board))
@@ -299,14 +318,15 @@ class GameState():
         directions = ((-1,-1), (-1,1), (1,-1), (1,1))
         BishopColor = self.board[row][column][0]
         for searchDirection in directions:
-            for index in range(2, 15):
+            for index in range(1, 14):
                 endRow = row + searchDirection[0] * index
                 endColumn = column + searchDirection[1] * index
-                if self.onGameBoardSquare(endRow, endColumn):
+                if self.isInsideGameGrid(endRow, endColumn):
                     endPiece = self.board[endRow][endColumn]
                     if endPiece == "--":
                         moves.append(Move((row, column), (endRow, endColumn), self.board))
                     elif endPiece[0] != BishopColor:
+                        #print("Flag 30", row, column, endRow, endColumn)
                         moves.append(Move((row, column), (endRow, endColumn), self.board))
                         break
                     else:
@@ -324,7 +344,7 @@ class GameState():
         for i in range(8):
             endRow = row + kingMoves[i][0]
             endColumn = column + kingMoves[i][1]
-            if self.onGameBoardSquare(endRow, endColumn):
+            if self.isInsideGameGrid(endRow, endColumn):
                 endPiece = self.board[endRow][endColumn]
                 if endPiece[0] != kingColor:
                     moves.append(Move((row, column), (endRow, endColumn), self.board))
@@ -349,7 +369,7 @@ class Move():
             return self.moveID == other.moveID
         return False
     
-    ranksToRows = {"1":14, "2":13, "3":12, "4":11, "5":10, "6":9, "7":8, "8":7, "9":6, "10":5, "11":4, "12":3, "13":2, "14":1}
+    ranksToRows = {"1":1, "2":2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "10":10, "11":11, "12":12, "13":13, "14":14}
     rowsToRanks = {v: k for k, v in ranksToRows.items()}
 
     filesToCols = {"a":1, "b":2, "c":3, "d":4, "e":5, "f":6, "g":7, "h":8, "i":9, "j":10, "k":11, "l":12, "m":13, "n":14}
