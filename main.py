@@ -18,7 +18,7 @@ pygame.display.set_icon(window_icon)
 WIDTH = 1000
 HEIGHT = 1000
 
-NUM_OF_HORIZONTAL_SQUARES = 14
+NUM_OF_HORIZONTAL_SQUARES = 16
 SQUARE_SIZE = HEIGHT // NUM_OF_HORIZONTAL_SQUARES
 
 TILE_SCALER = 1 # This is not yet properly implemented but I figured if we wanted to shrink the pieces we could use this. (Changing the number now shrinks but to the corner not center)
@@ -27,9 +27,12 @@ MAX_FPS = 60
 
 DARK_TILE_COLOR = pygame.Color(53, 44, 35)
 LIGHT_TILE_COLOR = pygame.Color(192, 158, 121)
-BLACKED_OUT_CORNER_COLOR = pygame.Color("black")
+SMALL_CORNER_COLOR = pygame.Color(89, 89, 89)
+LARGE_CORNER_COLOR = pygame.Color(120, 120, 120)
 HOVER_COLOR = pygame.Color(252, 186, 3)
 SELECTED_COLOR = pygame.Color(3, 157, 252)
+WHITE_BORDER_COLOR = pygame.Color(255, 255, 255)
+LINE_STROKE_COLOR = pygame.Color(0, 0, 0)
 
 # Helps load all the images into memory once. Also makes it easier to swap different piece images without retyping everything (Ex: Wood Piece image files)
 IMAGES = {}
@@ -98,7 +101,7 @@ def main():
                 # Stores the click into our variables.
                 else:                 
                     # This checks if the user clicked in a black corner. If so It will print to console and do nothing waiting for a valid move.
-                    if (row <= 2 and col <= 2) or (row >= 11 and col <= 2) or (row <= 2 and col >= 11) or (row >= 11 and col >= 11):
+                    if (row <= 3 and col <= 3) or (row >= 12 and col <= 3) or (row <= 3 and col >= 12) or (row >= 12 and col >= 12):
                         print("User clicked on a black corner")
 
                     # This appends for both the first and second clicks.
@@ -147,6 +150,14 @@ def main():
     pygame.quit()
     quit()
 
+def drawSquare( color, row, column, screen, stroke = True):
+    if stroke:
+        pygame.draw.rect(screen, color, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+        pygame.draw.rect(screen, LINE_STROKE_COLOR, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE),2)
+    else:
+        pygame.draw.rect(screen, color, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
+
 
 """ Displayes the current coloring of the board. The colors can be configured in the constants at the top."""
 def drawBoard(selectedTile, hoverTile, screen):
@@ -154,26 +165,46 @@ def drawBoard(selectedTile, hoverTile, screen):
     for row in range(NUM_OF_HORIZONTAL_SQUARES):
         for column in range(NUM_OF_HORIZONTAL_SQUARES):
 
-            # This code looks for the 3X3 corners and changes them to the BLACKED_OUT_CORNER_COLOR.
-            if (row <= 2 and column <= 2) or (row >= 11 and column <= 2) or (row <= 2 and column >= 11) or (row >= 11 and column >= 11):
-                pygame.draw.rect(screen, BLACKED_OUT_CORNER_COLOR, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
+
+            if (row == 0) or (row == 15) or (column == 0) or (column == 15):
+                if (row == 0 and column == 0) or (row == 15 and column == 0) or (row == 0 and column == 15) or (row == 15 and column == 15):
+                    drawSquare(SMALL_CORNER_COLOR, row, column, screen)
+                else:
+                    drawSquare(WHITE_BORDER_COLOR, row, column, screen)
+
+
+            # This code looks for the 3X3 corners and changes them to the SMALL_CORNER_COLOR.
+            elif (row <= 3 and column <= 3) or (row >= 12 and column <= 3) or (row <= 3 and column >= 12) or (row >= 12 and column >= 12):
+                drawSquare(SMALL_CORNER_COLOR, row, column, screen, False)
                 
             # This code makes the cursor easier to see by setting the tile below to the HOVER_COLOR (no hover color when hovering over selected).
             elif(row==hoverTile[0] and column==hoverTile[1]):
                 if(row==selectedTile[0] and column==selectedTile[1]):
-                    pygame.draw.rect(screen, SELECTED_COLOR, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                    drawSquare(SELECTED_COLOR, row, column, screen)
                 else:
-                    pygame.draw.rect(screen, HOVER_COLOR, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                    drawSquare(HOVER_COLOR, row, column, screen)
 
             # This code changes the color of a selected tile to the SELECTED_COLOR color.
             elif(row==selectedTile[0] and column==selectedTile[1]):
-                pygame.draw.rect(screen, SELECTED_COLOR, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                drawSquare(SELECTED_COLOR, row, column, screen)
 
             # This code Makes the traditional checkerboard pattern with a LIGHT_TILE_COLOR and a DARK_TILE_COLOR.
             else:
                 colors = [LIGHT_TILE_COLOR, DARK_TILE_COLOR] # These three lines could be collapsed but I left it for readability for now.
                 color = colors[((row+column) % 2)]
-                pygame.draw.rect(screen, color, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                drawSquare(color, row, column, screen)
+
+            """ This draws the large rectangles in the corners. """
+            pygame.draw.rect(screen, LARGE_CORNER_COLOR, pygame.Rect(1 * SQUARE_SIZE, 1 * SQUARE_SIZE, SQUARE_SIZE*3, SQUARE_SIZE*3))
+            pygame.draw.rect(screen, LINE_STROKE_COLOR, pygame.Rect(1 * SQUARE_SIZE, 1 * SQUARE_SIZE, SQUARE_SIZE*3, SQUARE_SIZE*3),2)
+            pygame.draw.rect(screen, LARGE_CORNER_COLOR, pygame.Rect(12 * SQUARE_SIZE, 1 * SQUARE_SIZE, SQUARE_SIZE*3, SQUARE_SIZE*3))
+            pygame.draw.rect(screen, LINE_STROKE_COLOR, pygame.Rect(12 * SQUARE_SIZE, 1 * SQUARE_SIZE, SQUARE_SIZE*3, SQUARE_SIZE*3),2)
+            pygame.draw.rect(screen, LARGE_CORNER_COLOR, pygame.Rect(1 * SQUARE_SIZE, 12 * SQUARE_SIZE, SQUARE_SIZE*3, SQUARE_SIZE*3))
+            pygame.draw.rect(screen, LINE_STROKE_COLOR, pygame.Rect(1 * SQUARE_SIZE, 12 * SQUARE_SIZE, SQUARE_SIZE*3, SQUARE_SIZE*3),2)       
+            pygame.draw.rect(screen, LARGE_CORNER_COLOR, pygame.Rect(12 * SQUARE_SIZE, 12 * SQUARE_SIZE, SQUARE_SIZE*3, SQUARE_SIZE*3))
+            pygame.draw.rect(screen, LINE_STROKE_COLOR, pygame.Rect(12 * SQUARE_SIZE, 12 * SQUARE_SIZE, SQUARE_SIZE*3, SQUARE_SIZE*3),2)
+
 
 def drawPieces(screen, board):
     for row in range(NUM_OF_HORIZONTAL_SQUARES):

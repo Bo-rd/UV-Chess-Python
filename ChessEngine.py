@@ -66,26 +66,28 @@ class GameState():
         # R = Rook, N = Knight, B = Bishop, Q = Queen, K = King, p = Pawn
         # -- denotes an empty square
         self.board = [
-            ["--","--","--","bR","bN","bB","bQ","bK","bB","bN","bR","--","--","--"],
-            ["--","--","--","bp","bp","bp","bp","bp","bp","bp","bp","--","--","--"],
-            ["--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
-            ["lR","lp","--","--","--","--","--","--","--","--","--","--","rp","rR"],
-            ["lN","lp","--","--","--","--","--","--","--","--","--","--","rp","rN"],
-            ["lB","lp","--","--","--","--","--","--","--","--","--","--","rp","rB"],
-            ["lQ","lp","--","--","--","--","--","--","--","--","--","--","rp","rQ"],
-            ["lK","lp","--","--","--","--","--","--","--","--","--","--","rp","rK"],
-            ["lB","lp","--","--","--","--","--","--","--","--","--","--","rp","rB"],
-            ["lN","lp","--","--","--","--","--","--","--","--","--","--","rp","rN"],
-            ["lR","lp","--","--","--","--","--","--","--","--","--","--","rp","rR"],
-            ["--","--","--","--","--","lB","--","--","--","lB","--","--","--","--"],
-            ["--","--","--","wp","wp","wp","wp","wp","wp","wp","wp","--","--","--"],
-            ["--","--","--","wR","wN","wB","wQ","wK","wB","wN","wR","--","--","--"]
+            ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
+            ["--","--","--","--","bR","bN","bB","bQ","bK","bB","bN","bR","--","--","--","--"],
+            ["--","--","--","--","bp","bp","bp","bp","bp","bp","bp","bp","--","--","--","--"],
+            ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
+            ["--","lR","lp","--","--","--","--","--","--","--","--","--","--","rp","rR","--"],
+            ["--","lN","lp","--","--","--","--","--","--","--","--","--","--","rp","rN","--"],
+            ["--","lB","lp","--","--","--","--","--","--","--","--","--","--","rp","rB","--"],
+            ["--","lQ","lp","--","--","--","--","--","--","--","--","--","--","rp","rQ","--"],
+            ["--","lK","lp","--","--","--","--","--","--","--","--","--","--","rp","rK","--"],
+            ["--","lB","lp","--","--","--","--","--","--","--","--","--","--","rp","rB","--"],
+            ["--","lN","lp","--","--","--","--","--","--","--","--","--","--","rp","rN","--"],
+            ["--","lR","lp","--","--","--","--","--","--","--","--","--","--","rp","rR","--"],
+            ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
+            ["--","--","--","--","wp","wp","wp","wp","wp","wp","wp","wp","--","--","--","--"],
+            ["--","--","--","--","wR","wN","wB","wQ","wK","wB","wN","wR","--","--","--","--"],
+            ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"]
         ]
 
-        self.whiteKingLocation = (13, 7)
-        self.blueKingLocation = (7, 0)
-        self.blackKingLocation = (0, 7)
-        self.redKingLocation = (7, 13)
+        self.whiteKingLocation = (14, 8)
+        self.blueKingLocation = (8, 1)
+        self.blackKingLocation = (1, 8)
+        self.redKingLocation = (8, 14)
 
         self.moveFunctions = {'p': self.getPawnMoves, "R": self.getRookMoves, "N": self.getKnightMoves, "B": self.getBishopMoves, "Q": self.getQueenMoves, "K": self.getKingMoves}
         self.currentPlayerPrintout = {0:"It is White's Turn", 1:"It is Blue's Turn", 2:"It is Black's Turn", 3:"It is Red's Turn"}
@@ -196,7 +198,7 @@ class GameState():
 
     # Returnes True if coords are in the 14X14 board AND not in one of those corner spots.
     def onGameBoardSquare(self, endRow, endColumn):
-        if 0 <= endRow < 14 and 0 <= endColumn < 14 and not ((endRow <= 2 and endColumn <= 2) or (endRow >= 11 and endColumn <= 2) or (endRow <= 2 and endColumn >= 11) or (endRow >= 11 and endColumn >= 11)):
+        if 1 <= endRow <= 14 and 1 <= endColumn <= 14 and not ((endRow <= 3 and endColumn <= 3) or (endRow >= 12 and endColumn <= 3) or (endRow <= 3 and endColumn >= 12) or (endRow >= 12 and endColumn >= 12)):
             return True
         return False
     """
@@ -208,14 +210,14 @@ class GameState():
         if playerList.currentPlayer.number == 0: 
             if self.board[row-1][column] == "--":
                 moves.append(Move((row, column), (row-1, column), self.board))
-                if row == 12 and self.board[row-2][column] == "--":
+                if row == 13 and self.board[row-2][column] == "--":
                     moves.append(Move((row, column), (row-2, column), self.board))
             #Captures to the left
-            if column-1 >=0: #Bounds checking
+            if column-1 >=1: #Bounds checking
                 if (self.board[row-1][column-1][0] != '-') and (self.board[row-1][column-1][0] != 'w'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row-1, column-1), self.board))
             #Captures to the right
-            if column+1 <=13: #Bounds checking
+            if column+1 <=14: #Bounds checking
                 if (self.board[row-1][column+1][0] != '-') and (self.board[row-1][column+1][0] != 'w'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row-1, column+1), self.board))
 
@@ -223,14 +225,14 @@ class GameState():
         if playerList.currentPlayer.number == 1: 
             if self.board[row][column+1] == "--":
                 moves.append(Move((row, column), (row, column+1), self.board))
-                if column == 1 and self.board[row][column+2] == "--":
+                if column == 2 and self.board[row][column+2] == "--":
                     moves.append(Move((row, column), (row, column+2), self.board))
             #Captures upward
-            if row-1 >=0: #Bounds checking
+            if row-1 >=1: #Bounds checking
                 if (self.board[row-1][column+1][0] != '-') and (self.board[row-1][column+1][0] != 'l'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row-1, column+1), self.board))
             #Captures downward 
-            if row+1 <=13: #Bounds checking
+            if row+1 <=14: #Bounds checking
                 if (self.board[row+1][column+1][0] != '-') and (self.board[row+1][column+1][0] != 'l'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row+1, column+1), self.board))
 
@@ -238,14 +240,14 @@ class GameState():
         if playerList.currentPlayer.number == 2: 
             if self.board[row+1][column] == "--":
                 moves.append(Move((row, column), (row+1, column), self.board))
-                if row == 1 and self.board[row+2][column] == "--":
+                if row == 2 and self.board[row+2][column] == "--":
                     moves.append(Move((row, column), (row+2, column), self.board))
             #Captures to the left
-            if column-1 >=0: #Bounds checking
+            if column-1 >=1: #Bounds checking
                 if (self.board[row+1][column-1][0] != '-') and (self.board[row+1][column-1][0] != 'b'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row+1, column-1), self.board))
             #Captures to the right
-            if column+1 <=13: #Bounds checking
+            if column+1 <=14: #Bounds checking
                 if (self.board[row+1][column+1][0] != '-') and (self.board[row+1][column+1][0] != 'b'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row+1, column+1), self.board))
 
@@ -253,14 +255,14 @@ class GameState():
         if playerList.currentPlayer.number == 3: 
             if self.board[row][column-1] == "--":
                 moves.append(Move((row, column), (row, column-1), self.board))
-                if column == 12 and self.board[row][column-2] == "--":
+                if column == 13 and self.board[row][column-2] == "--":
                     moves.append(Move((row, column), (row, column-2), self.board))
             #Captures upward
-            if row-1 >=0: #Bounds checking
+            if row-1 >=1: #Bounds checking
                 if (self.board[row-1][column-1][0] != '-') and (self.board[row-1][column-1][0] != 'r'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row-1, column-1), self.board))
             #Captures downward 
-            if row+1 <=13: #Bounds checking
+            if row+1 <=14: #Bounds checking
                 if (self.board[row+1][column-1][0] != '-') and (self.board[row+1][column-1][0] != 'r'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row+1, column-1), self.board))                    
 
@@ -268,7 +270,7 @@ class GameState():
         directions = ((-1,0), (0,-1), (1,0), (0,1)) #up, left, down, right
         rookColor = self.board[row][column][0]
         for searchDirection in directions:
-            for index in range(1, 14):
+            for index in range(2, 15):
                 endRow = row + searchDirection[0] * index
                 endColumn = column + searchDirection[1] * index
                 if self.onGameBoardSquare(endRow, endColumn):
@@ -298,7 +300,7 @@ class GameState():
         directions = ((-1,-1), (-1,1), (1,-1), (1,1))
         BishopColor = self.board[row][column][0]
         for searchDirection in directions:
-            for index in range(1, 14):
+            for index in range(2, 15):
                 endRow = row + searchDirection[0] * index
                 endColumn = column + searchDirection[1] * index
                 if self.onGameBoardSquare(endRow, endColumn):
@@ -348,10 +350,10 @@ class Move():
             return self.moveID == other.moveID
         return False
     
-    ranksToRows = {"1":13, "2":12, "3":11, "4":10, "5":9, "6":8, "7":7, "8":6, "9":5, "10":4, "11":3, "12":2, "13":1, "14":0}
+    ranksToRows = {"1":14, "2":13, "3":12, "4":11, "5":10, "6":9, "7":8, "8":7, "9":6, "10":5, "11":4, "12":3, "13":2, "14":1}
     rowsToRanks = {v: k for k, v in ranksToRows.items()}
 
-    filesToCols = {"a":0, "b":1, "c":2, "d":3, "e":4, "f":5, "g":6, "h":7, "i":8, "j":9, "k":10, "l":11, "m":12, "n":13}
+    filesToCols = {"a":1, "b":2, "c":3, "d":4, "e":5, "f":6, "g":7, "h":8, "i":9, "j":10, "k":11, "l":12, "m":13, "n":14}
     colsToFiles = {v: k for k, v in filesToCols.items()}
 
     def getChessNotation(self):
