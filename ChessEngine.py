@@ -12,7 +12,7 @@ Andrew P -- Christopher Wilkinson -- Joshua Kitchen -- Max Diamond -- Seth Bird
 """ The Node type object that holds player's info for our doubly linked list """
 import copy
 
-class ChesPlayerObject:
+class ChessPlayerObject:
     def __init__(self, name, gameColor, colorCode, number, nextPlayer = None, previousPlayer = None) -> None:
        self.name = name
        self.gameColor = gameColor
@@ -20,9 +20,6 @@ class ChesPlayerObject:
        self.number = number
        self.nextPlayer = nextPlayer
        self.previousPlayer = previousPlayer
-
-       self.canCastleLeft = True
-       self.canCastleRight = True
 
 """ Our doubly linked list """
 class GamePlayers:
@@ -45,10 +42,10 @@ userPlayerNames = ["Alpha", "Bravo", "Charlie", "Delta"] # If we want to impleme
 
 # This creates a linked list to keep the player's info and to make switching easier.
 playerList = GamePlayers()
-whitePlayer = ChesPlayerObject(userPlayerNames[0], "White", "w", 0, nextPlayer = None,  previousPlayer = None)
-redPlayer = ChesPlayerObject(userPlayerNames[1], "Red", "r", 1, nextPlayer = None,  previousPlayer = whitePlayer)
-blackPlayer = ChesPlayerObject(userPlayerNames[2], "Black", "b", 2, nextPlayer = None,  previousPlayer = redPlayer)
-bluePlayer = ChesPlayerObject(userPlayerNames[3], "Blue", "l", 3, nextPlayer = None,  previousPlayer = blackPlayer)
+whitePlayer = ChessPlayerObject(userPlayerNames[0], "White", "w", 0, nextPlayer = None, previousPlayer = None)
+redPlayer = ChessPlayerObject(userPlayerNames[1], "Red", "r", 1, nextPlayer = None, previousPlayer = whitePlayer)
+blackPlayer = ChessPlayerObject(userPlayerNames[2], "Black", "b", 2, nextPlayer = None, previousPlayer = redPlayer)
+bluePlayer = ChessPlayerObject(userPlayerNames[3], "Blue", "l", 3, nextPlayer = None, previousPlayer = blackPlayer)
 
 # Since some objects are not created until after these needed to be manually put in.
 whitePlayer.nextPlayer = redPlayer
@@ -60,7 +57,7 @@ whitePlayer.previousPlayer = bluePlayer
 # This starts off the doubly linked list with the starting player.
 playerList.currentPlayer = whitePlayer
 
-class GameState():
+class GameState:
     def __init__(self) -> None:
         # w = White, l = Blue, b = Black, r = Red
         # R = Rook, N = Knight, B = Bishop, Q = Queen, K = King, p = Pawn
@@ -68,19 +65,19 @@ class GameState():
         self.board = [
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
             ["--","--","--","--","bR","bN","bB","bQ","bK","bB","bN","bR","--","--","--","--"],
-            ["--","--","--","--","bp","bp","bp","bp","bp","bp","bp","bp","--","--","--","--"],
+            ["--","--","--","--","--","bp","bp","bp","--","bp","bp","--","--","--","--","--"],
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
-            ["--","rR","rp","--","--","--","--","--","--","--","--","--","--","lp","lR","--"],
+            ["--","rR","--","--","--","--","--","--","--","--","--","--","--","--","lR","--"],
             ["--","rN","rp","--","--","--","--","--","--","--","--","--","--","lp","lN","--"],
             ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lp","lB","--"],
-            ["--","rQ","rp","--","--","--","--","--","--","--","--","--","--","lp","lQ","--"],
-            ["--","rK","rp","--","--","--","--","--","--","--","--","--","--","lp","lK","--"],
-            ["--","rB","rp","--","--","--","--","--","--","--","--","rB","--","lp","lB","--"],
+            ["--","rK","--","--","--","--","--","--","--","--","--","--","--","lp","lQ","--"],
+            ["--","rQ","rp","--","--","--","--","--","--","--","--","--","--","--","lK","--"],
+            ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lp","lB","--"],
             ["--","rN","rp","--","--","--","--","--","--","--","--","--","--","lp","lN","--"],
-            ["--","rR","rp","--","--","--","--","--","--","--","--","--","--","lp","lR","--"],
+            ["--","rR","--","--","--","--","--","--","--","--","--","--","--","--","lR","--"],
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
-            ["--","--","--","--","wp","wp","wp","wp","wp","wp","wp","wp","--","--","--","--"],
-            ["--","--","--","--","wR","wN","wB","wQ","wK","wB","wN","wR","--","--","--","--"],
+            ["--","--","--","--","--","wp","wp","--","wp","wp","wp","--","--","--","--","--"],
+            ["--","--","--","--","wR","wN","wB","wK","wQ","wB","wN","wR","--","--","--","--"],
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"]
         ]
 
@@ -95,6 +92,24 @@ class GameState():
         self.moveLog = []
         # Print player name change on change
 
+        """FOR CASTLING"""
+        # white
+        self.wR_west_moved = False
+        self.wR_east_moved = False
+        self.wK_moved = False
+        # black
+        self.bR_west_moved = False
+        self.bR_east_moved = False
+        self.bK_moved = False
+        # blue
+        self.lR_north_moved = False
+        self.lR_south_moved = False
+        self.lK_moved = False
+        # red
+        self.rR_north_moved = False
+        self.rR_south_moved = False
+        self.rK_moved = False
+
     def updateKing(self, move):
         # Updates the King's Position tuple if needed.
         if move.pieceMoved == "wK":
@@ -108,6 +123,66 @@ class GameState():
 
     """ Moves a chess piece """
     def makeMove(self, move):
+
+        """FOR CASTLING"""
+        if move.pieceMoved[1] == "R":
+            if move.pieceMoved[0] == "w":
+                if move.startCol == 4:
+                    if self.wR_west_moved is False:
+                        self.wR_west_moved = True
+                        print("WHITE WEST ROOK MOVED")
+                else:
+                    if self.wR_east_moved is False:
+                        self.wR_east_moved = True
+                        print("WHITE EAST ROOK MOVED")
+
+            elif move.pieceMoved[0] == "b":
+                if move.startCol == 4:
+                    if self.bR_west_moved is False:
+                        self.bR_west_moved = True
+                        print("BLACK WEST ROOK MOVED")
+                else:
+                    if self.bR_east_moved is False:
+                        self.bR_east_moved = True
+                        print("BLACK EAST ROOK MOVED")
+
+            elif move.pieceMoved[0] == "l":
+                if move.startRow == 4:
+                    if self.lR_north_moved is False:
+                        self.lR_north_moved = True
+                        print("BLUE NORTH ROOK MOVED")
+                else:
+                    if self.lR_south_moved is False:
+                        self.lR_south_moved = True
+                        print("BLUE SOUTH ROOK MOVED")
+            elif move.pieceMoved[0] == "r":
+                if move.startRow == 4:
+                    if self.rR_north_moved is False:
+                        self.rR_north_moved = True
+                        print("RED NORTH ROOK MOVED")
+                else:
+                    if self.rR_south_moved is False:
+                        self.rR_south_moved = True
+                        print("RED SOUTH ROOK MOVED")
+        elif move.pieceMoved[1] == "K":
+            if move.pieceMoved[0] == "w":
+                if self.wK_moved is False:
+                    self.wK_moved = True
+                    print("WHITE KING MOVED")
+            elif move.pieceMoved[0] == "b":
+                if self.bK_moved is False:
+                    self.bK_moved = True
+                    print("BLACK KING MOVED")
+            elif move.pieceMoved[0] == "l":
+                if self.lK_moved is False:
+                    self.lK_moved = True
+                    print("BLUE KING MOVED")
+            elif move.pieceMoved[0] == "r":
+                if self.rK_moved is False:
+                    self.rK_moved = True
+                    print("RED KING MOVED")
+
+
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endColumn] = move.pieceMoved
         self.moveLog.append(move) #logs the move
@@ -338,7 +413,7 @@ class GameState():
         self.getRookMoves(row, column, moves)
         self.getBishopMoves(row, column, moves)
 
-    def getKingMoves(self, row, column ,moves):
+    def getKingMoves(self, row, column, moves):
         kingMoves = ((-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1))
         kingColor = self.board[row][column][0]
         for i in range(8):
@@ -349,8 +424,9 @@ class GameState():
                 if endPiece[0] != kingColor:
                     moves.append(Move((row, column), (endRow, endColumn), self.board))
 
+
 """ Move Class. Holds a move object as well as the chess notation."""                    
-class Move():
+class Move:
     def __init__(self, startSq, endSq, board) -> None:
         self.startRow = startSq[0]
         self.startCol = startSq[1]

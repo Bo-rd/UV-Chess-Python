@@ -122,7 +122,7 @@ def main():
                         moveMade = True
                         resetStorageVariables()
 
-                    # If illeagal resets.
+                    # If illegal resets.
                     else:
                         print("Illegal Move, try again.")
                         resetStorageVariables()
