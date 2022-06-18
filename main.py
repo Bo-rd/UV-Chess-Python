@@ -2,7 +2,7 @@
 4 player Chess - Python
 Summer 2022
 -
-Andrew P -- Christopher Wilkinson -- Joshua Kitchen -- Max Diamond -- Seth Bird
+Andrew Pritchett -- Christopher Wilkinson -- Joshua Kitchen -- Max Diamond -- Seth Bird
 -
 This is our main driver file. It will be responsible for handling user input and displaying the current GameState object on screen.
 """
@@ -42,8 +42,9 @@ def loadImages():
     for piece in pieces:
         IMAGES[piece] = pygame.transform.scale(pygame.image.load(os.path.join("images/" + piece + ".png")), (SQUARE_SIZE * GAME_PIECE_SCALER ,SQUARE_SIZE * GAME_PIECE_SCALER))
 
-""" Main Driver for our chess game"""
+
 def main():
+    """ Main Driver for our chess game"""
     loadImages() # Loads the images so you do not have to keep loading them each time the board is re-drawn.
     hoverTile = (0,0) # Saves the location of the tile that is being hovered for coloring.
     global selectedTile; selectedTile = (0,0) # Holds the location of a selected tile for coloring.
@@ -119,10 +120,6 @@ def main():
                 if len(playerClicks) == 2:
                     selectedMove = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
                     
-                    if len(validMoves) == 0:
-                        print("Checkmate")
-                        # need code to remove current player/pieces and cycle turn
-
                     # If legal makes the move.
                     if selectedMove in validMoves:
                         print("Rank & File Notation:" + selectedMove.getChessNotation() + "\n") #Prints out the chess notation to the console.

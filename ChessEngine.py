@@ -9,10 +9,11 @@ Andrew P -- Christopher Wilkinson -- Joshua Kitchen -- Max Diamond -- Seth Bird
 #Calculate Valid Moves
 """
 
-""" The Node type object that holds player's info for our doubly linked list """
+
 import copy
 
 class ChessPlayerObject:
+    """ The Node type object that holds player's info for our doubly linked list """
     def __init__(self, name, gameColor, colorCode, number, nextPlayer = None, previousPlayer = None) -> None:
        self.name = name
        self.gameColor = gameColor
@@ -24,8 +25,9 @@ class ChessPlayerObject:
        self.canCastleLeft = True
        self.canCastleRight = True
 
-""" Our doubly linked list """
+
 class GamePlayers:
+    """ Our doubly linked list """
     def __init__(self) -> None:
        self.currentPlayer = None
     
@@ -75,9 +77,9 @@ class GameState():
             ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lp","lB","--"],
             ["--","rQ","rp","--","--","--","--","--","--","--","--","--","--","lp","lQ","--"],
             ["--","rK","rp","--","--","--","--","--","--","--","--","--","--","lp","lK","--"],
-            ["--","rB","rp","--","--","--","--","--","--","--","--","rB","--","lp","lB","--"],
-            ["--","rN","rp","--","--","--","--","--","--","--","--","--","--","lp","lN","--"],
-            ["--","rR","rp","--","--","--","--","--","--","--","--","--","--","lp","lR","--"],
+            ["--","rB","rp","--","--","--","--","--","--","--","--","--","lp","--","lB","--"],
+            ["--","rN","rp","--","--","--","--","--","--","--","--","--","rB","lp","lN","--"],
+            ["--","rR","rp","--","--","--","--","--","--","--","--","--","lp","--","lR","--"],
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
             ["--","--","--","--","wp","wp","wp","wp","wp","wp","wp","wp","--","--","--","--"],
             ["--","--","--","--","wR","wN","wB","wQ","wK","wB","wN","wR","--","--","--","--"],
@@ -106,8 +108,9 @@ class GameState():
         if move.pieceMoved == "lK":
             self.blueKingLocation = (move.endRow, move.endColumn)
 
-    """ Moves a chess piece """
+    
     def makeMove(self, move):
+        """ Moves a chess piece """
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endColumn] = move.pieceMoved
         self.moveLog.append(move) #logs the move
@@ -118,9 +121,9 @@ class GameState():
 
         print(self.currentPlayerPrintout[playerList.currentPlayer.number]) # Prints new players turn
     
-
-    """ Undoes the last move """
+    
     def undoMove(self):
+        """ Undoes the last move """
         if len(self.moveLog) != 0:
             move = self.moveLog.pop()
             self.board[move.startRow][move.startCol] = move.pieceMoved
@@ -140,8 +143,8 @@ class GameState():
         self.updateKing(move)
 
 
-    """All moves considering checks"""
     def getValidMoves(self):
+        """All moves considering checks"""
         validMoves = [] # To return valid moves.
         attackerMoveList = [] # To hold potential attacker moves.
         
@@ -186,8 +189,9 @@ class GameState():
         self.blueKingLocation  = temp4
         return validMoves 
 
-    """ Determines if the current player is in check """
+    
     def inCheck(self, row, column):
+        """ Determines if the current player is in check """
         if playerList.currentPlayer.number == 0:
             return (row == self.whiteKingLocation[0]) and (column == self.whiteKingLocation[1])
         
@@ -201,8 +205,9 @@ class GameState():
             return (row == self.blueKingLocation[0]) and (column == self.blueKingLocation[1])
 
 
-    """All moves without consideriding checks"""
+    
     def getAllPossibleMoves(self):
+        """All moves without consideriding checks"""
         moves = []
         for row in range(len(self.board)): 
             for column in range(len(self.board[row])):
@@ -218,12 +223,13 @@ class GameState():
         if 1 <= endRow <= 14 and 1 <= endColumn <= 14 and not ((endRow <= 3 and endColumn <= 3) or (endRow >= 12 and endColumn <= 3) or (endRow <= 3 and endColumn >= 12) or (endRow >= 12 and endColumn >= 12)):
             return True
         return False
-    """
-    Get all the pawn moves for the pawn located at row, col and add these moves to the list
-    """
-    def getPawnMoves(self, row, column, moves):
 
-        """ Player 0 is white. This logic is for WHITE Pawns. """
+    def getPawnMoves(self, row, column, moves):
+        """
+        Get all the pawn moves for the pawn located at row, col and add these moves to the list
+        """
+
+        ''' Player 0 is white. This logic is for WHITE Pawns. '''
         if playerList.currentPlayer.number == 0: 
             if self.board[row-1][column] == "--":
                 moves.append(Move((row, column), (row-1, column), self.board))
@@ -238,7 +244,7 @@ class GameState():
                 if (self.board[row-1][column+1][0] != '-') and (self.board[row-1][column+1][0] != 'w'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row-1, column+1), self.board))
 
-        """ Player 1 is red. This logic is for RED Pawns. """
+        ''' Player 1 is red. This logic is for RED Pawns. '''
         if playerList.currentPlayer.number == 1: 
             if self.board[row][column+1] == "--":
                 moves.append(Move((row, column), (row, column+1), self.board))
@@ -253,7 +259,7 @@ class GameState():
                 if (self.board[row+1][column+1][0] != '-') and (self.board[row+1][column+1][0] != 'r'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row+1, column+1), self.board))
 
-        """ Player 2 is black. This logic is for BLACK Pawns. """
+        ''' Player 2 is black. This logic is for BLACK Pawns. '''
         if playerList.currentPlayer.number == 2: 
             if self.board[row+1][column] == "--":
                 moves.append(Move((row, column), (row+1, column), self.board))
@@ -268,7 +274,7 @@ class GameState():
                 if (self.board[row+1][column+1][0] != '-') and (self.board[row+1][column+1][0] != 'b'): #Make sure not capturing self or empty
                     moves.append(Move((row, column), (row+1, column+1), self.board))
 
-        """ Player 3 is blue. This logic is for BLUE Pawns. """
+        ''' Player 3 is blue. This logic is for BLUE Pawns. '''
         if playerList.currentPlayer.number == 3: 
             if self.board[row][column-1] == "--":
                 moves.append(Move((row, column), (row, column-1), self.board))
