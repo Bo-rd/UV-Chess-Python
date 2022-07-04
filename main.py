@@ -150,7 +150,7 @@ def main():
             moveMade = False
 
         # Draws the game  
-        drawBoard(selectedTile,hoverTile, screen)
+        drawBoard(selectedTile, hoverTile, screen)
         drawPieces(screen, gs.board)
         drawNumAndLetters(screen)
         pygame.display.flip()

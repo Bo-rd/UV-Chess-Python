@@ -2,7 +2,7 @@
 4 player Chess - Python
 Summer 2022
 -
-Andrew P -- Christopher Wilkinson -- Joshua Kitchen -- Max Diamond -- Seth Bird
+Andrew Pritchett -- Christopher Wilkinson -- Joshua Kitchen -- Max Diamond -- Seth Bird
 -
 #GameState
 #Move Log
@@ -41,6 +41,7 @@ class GamePlayers:
     def removePlayer(self):
         self.nextPlayer()
         self.currentPlayer.previousPlayer = self.currentPlayer.previousPlayer.previousPlayer
+        self.currentPlayer.previousPlayer.nextPlayer = self.currentPlayer
 
 """ Implementing/initiating the player list """
 userPlayerNames = ["Alpha", "Bravo", "Charlie", "Delta"] # If we want to implement user submitted usernames in the future we could add them to a list like this
@@ -77,9 +78,9 @@ class GameState():
             ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lp","lB","--"],
             ["--","rQ","rp","--","--","--","--","--","--","--","--","--","--","lp","lQ","--"],
             ["--","rK","rp","--","--","--","--","--","--","--","--","--","--","lp","lK","--"],
-            ["--","rB","rp","--","--","--","--","--","--","--","--","--","lp","--","lB","--"],
-            ["--","rN","rp","--","--","--","--","--","--","--","--","--","rB","lp","lN","--"],
-            ["--","rR","rp","--","--","--","--","--","--","--","--","--","lp","--","lR","--"],
+            ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lP","lB","--"],
+            ["--","rN","rp","--","--","--","--","--","--","--","--","--","--","lp","lN","--"],
+            ["--","rR","rp","--","--","--","--","--","--","--","--","--","--","lP","lR","--"],
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
             ["--","--","--","--","wp","wp","wp","wp","wp","wp","wp","wp","--","--","--","--"],
             ["--","--","--","--","wR","wN","wB","wQ","wK","wB","wN","wR","--","--","--","--"],
@@ -107,7 +108,6 @@ class GameState():
             self.blackKingLocation = (move.endRow, move.endColumn)
         if move.pieceMoved == "lK":
             self.blueKingLocation = (move.endRow, move.endColumn)
-
     
     def makeMove(self, move):
         """ Moves a chess piece """
@@ -162,24 +162,26 @@ class GameState():
             attackerMoveList = []
             self.getValidMovesHelper(moves[i]) # Moves one piece per loop of the origin color.
 
-            # Adds the next three player's moves into the attackerMoveList list.
-            playerList.nextPlayer() 
-            attackerMoveList += self.getAllPossibleMoves()
-            playerList.nextPlayer() 
-            attackerMoveList += self.getAllPossibleMoves()
-            playerList.nextPlayer() 
-            attackerMoveList += self.getAllPossibleMoves()
-            playerList.nextPlayer() #The fourth one just returns back to the right player order.
+            currPlayer = playerList.currentPlayer
+
+            playerList.nextPlayer() # move to the next player
+            while playerList.currentPlayer != currPlayer:
+                attackerMoveList += self.getAllPossibleMoves()
+                playerList.nextPlayer() # increment
+
+            # loop ends at the current player
 
             testFlag = True
             # Loops through potential other player's moves
-            for attackerMove in attackerMoveList:                
-                if self.inCheck(attackerMove.endRow, attackerMove.endColumn): # If an other piece puts you into check....
+            for attackerMove in attackerMoveList:
+                # If an other piece puts you into check....
+                if self.inCheck(attackerMove.endRow, attackerMove.endColumn): 
                     testFlag = False
                     break
 
             if testFlag == True:
                 validMoves.append(moves[i])
+
             self.board = copy.deepcopy(boardBackup) # Restores the board.
         self.board = copy.deepcopy(boardBackup) # Restores the board.
         # Restores the original king locations
@@ -187,9 +189,40 @@ class GameState():
         self.redKingLocation = temp2
         self.blackKingLocation = temp3
         self.blueKingLocation  = temp4
-        return validMoves 
 
-    
+        # for checkmate
+        if len(validMoves) > 0:
+            return validMoves
+
+        else:
+            playerSymbol = playerList.currentPlayer.colorCode
+            playerNum = playerList.currentPlayer.number
+
+            playerList.removePlayer()
+
+            # remove from turn printout roster
+            self.currentPlayerPrintout.pop(playerNum)
+
+            # remove king location
+            if playerSymbol == 'w':
+                self.whiteKingLocation = (0,0)
+            elif playerSymbol == 'r':
+                self.redKingLocation = (0,0)
+            elif playerSymbol == 'b':
+                self.blackKingLocation = (0,0)
+            else:
+                self.blueKingLocation = (0,0)
+
+            # hard remove players pieces from board
+            for row in range(len(self.board)):
+                for col in range(len(self.board[0])):
+                    if self.board[row][col][0] == playerSymbol:
+                        self.board[row][col] = "--"
+            
+            print(self.currentPlayerPrintout[playerList.currentPlayer.number]) # Prints new players turn
+
+            return self.getValidMoves() # get moves for next player
+
     def inCheck(self, row, column):
         """ Determines if the current player is in check """
         if playerList.currentPlayer.number == 0:
@@ -203,7 +236,6 @@ class GameState():
 
         if playerList.currentPlayer.number == 3:
             return (row == self.blueKingLocation[0]) and (column == self.blueKingLocation[1])
-
 
     
     def getAllPossibleMoves(self):
