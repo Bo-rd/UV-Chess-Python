@@ -22,9 +22,7 @@ class ChessPlayerObject:
        self.nextPlayer = nextPlayer
        self.previousPlayer = previousPlayer
 
-       self.canCastleLeft = True
-       self.canCastleRight = True
-
+       self.canCastle = True
 
 class GamePlayers:
     """ Our doubly linked list """
@@ -81,9 +79,9 @@ class GameState():
             ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lp","lB","--"],
             ["--","rN","rp","--","--","--","--","--","--","--","--","--","--","lp","lN","--"],
             ["--","rR","rp","--","--","--","--","--","--","--","--","--","--","lp","lR","--"],
-            ["--","--","--","--","--","wN","wB","wQ","--","wB","wN","--","--","--","--","--"],
+            ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
             ["--","--","--","--","wp","wp","wp","wp","wp","wp","wp","wp","--","--","--","--"],
-            ["--","--","--","--","wR","--","--","--","wK","--","--","wR","--","--","--","--"],
+            ["--","--","--","--","wR","wN","wB","wQ","wK","wB","wN","wR","--","--","--","--"],
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"]
         ]
 
@@ -98,16 +96,138 @@ class GameState():
         self.moveLog = []
         # Print player name change on change
 
+    def canCastleLeft(self, color):
+        if color == 'w':
+            if self.board[14][4] == "wR" and self.board[14][8] == "wK":
+                for i in range(5,8):
+                    if self.board[14][i] != "--":
+                        return False
+                return True
+        
+        elif color == 'r':
+            if self.board[4][1] == "rR" and self.board[8][1] == "rK":
+                for i in range(5,8):
+                    if self.board[i][1] != "--":
+                        return False
+                return True
+
+        elif color == 'b':
+            if self.board[1][11] == "bR" and self.board[1][8] == "bK":
+                for i in range(9,11):
+                    if self.board[1][i] != "--":
+                        return False
+                return True
+
+        else: # blue
+            if self.board[11][14] == "lR" and self.board[8][14] == "lK":
+                for i in range(9,11):
+                    if self.board[i][14] != "--":
+                        return False
+                return True
+
+    def canCastleRight(self, color):
+        if color == 'w':
+            if self.board[14][11] == "wR" and self.board[14][8] == "wK":
+                for i in range(9,11):
+                    if self.board[14][i] != "--":
+                        return False
+                return True
+        
+        elif color == 'r':
+            if self.board[11][1] == "rR" and self.board[8][1] == "rK":
+                for i in range(9,11):
+                    if self.board[i][1] != "--":
+                        return False
+                return True
+
+        elif color == 'b':
+            if self.board[1][4] == "bR" and self.board[1][8] == "bK":
+                for i in range(5,8):
+                    if self.board[1][i] != "--":
+                        return False
+                return True
+
+        else: # blue
+            if self.board[4][14] == "lR" and self.board[8][14] == "lK":
+                for i in range(5,8):
+                    if self.board[i][14] != "--":
+                        return False
+                return True
+
     def updateKing(self, move):
         # Updates the King's Position tuple if needed.
         if move.pieceMoved == "wK":
             self.whiteKingLocation = (move.endRow, move.endCol)
+
+            whitePlayer.canCastle = False
+
+            direction = move.endCol - move.startCol
+            if direction == -2:
+                rookMove = Move((14,4), (14,7), self.board)
+                self.board[rookMove.startRow][rookMove.startCol] = "--"
+                self.board[rookMove.endRow][rookMove.endCol] = rookMove.pieceMoved
+                self.moveLog.append(rookMove) #logs the move
+
+            elif direction == 2:
+                rookMove = Move((14,11), (14,9), self.board)
+                self.board[rookMove.startRow][rookMove.startCol] = "--"
+                self.board[rookMove.endRow][rookMove.endCol] = rookMove.pieceMoved
+                self.moveLog.append(rookMove) #logs the move
+                
         if move.pieceMoved == "rK":
             self.redKingLocation = (move.endRow, move.endCol)
+
+            redPlayer.canCastle = False
+
+            direction = move.endRow - move.startRow
+            if direction == -2:
+                rookMove = Move((4,1), (7,1), self.board)
+                self.board[rookMove.startRow][rookMove.startCol] = "--"
+                self.board[rookMove.endRow][rookMove.endCol] = rookMove.pieceMoved
+                self.moveLog.append(rookMove) #logs the move
+
+            elif direction == 2:
+                rookMove = Move((11,1), (9,1), self.board)
+                self.board[rookMove.startRow][rookMove.startCol] = "--"
+                self.board[rookMove.endRow][rookMove.endCol] = rookMove.pieceMoved
+                self.moveLog.append(rookMove) #logs the move
+
         if move.pieceMoved == "bK":
             self.blackKingLocation = (move.endRow, move.endCol)
+
+            blackPlayer.canCastle = False
+
+            direction = move.endCol - move.startCol
+            if direction == -2:
+                rookMove = Move((1,4), (1,7), self.board)
+                self.board[rookMove.startRow][rookMove.startCol] = "--"
+                self.board[rookMove.endRow][rookMove.endCol] = rookMove.pieceMoved
+                self.moveLog.append(rookMove) #logs the move
+
+            elif direction == 2:
+                rookMove = Move((1,11), (1,9), self.board)
+                self.board[rookMove.startRow][rookMove.startCol] = "--"
+                self.board[rookMove.endRow][rookMove.endCol] = rookMove.pieceMoved
+                self.moveLog.append(rookMove) #logs the move
+
         if move.pieceMoved == "lK":
             self.blueKingLocation = (move.endRow, move.endCol)
+            
+            bluePlayer.canCastle = False
+
+            direction = move.endRow - move.startRow
+            if direction == -2: # right castle
+                rookMove = Move((4,14), (7,14), self.board)
+                self.board[rookMove.startRow][rookMove.startCol] = "--"
+                self.board[rookMove.endRow][rookMove.endCol] = rookMove.pieceMoved
+                self.moveLog.append(rookMove) #logs the move
+
+            elif direction == 2: # left castle
+                rookMove = Move((11,14), (9,14), self.board)
+                self.board[rookMove.startRow][rookMove.startCol] = "--"
+                self.board[rookMove.endRow][rookMove.endCol] = rookMove.pieceMoved
+                self.moveLog.append(rookMove) #logs the move
+
     
     def makeMove(self, move):
         """ Moves a chess piece """
@@ -382,28 +502,28 @@ class GameState():
 
         # adds castling moves for each color
         if kingColor == 'w':
-            if whitePlayer.canCastleLeft:
+            if self.canCastleLeft('w'):
                 kingMoves.append((0,-2))
-            if whitePlayer.canCastleRight:
+            if self.canCastleRight('w'):
                 kingMoves.append((0,2))
 
         elif kingColor == 'r':
-            if redPlayer.canCastleLeft:
+            if self.canCastleLeft('r'):
                 kingMoves.append((-2,0))
-            if redPlayer.canCastleRight:
+            if self.canCastleRight('r'):
                 kingMoves.append((2,0))
 
         elif kingColor == 'b':
             # upside down version of white
-            if blackPlayer.canCastleLeft:
+            if self.canCastleLeft('b'):
                 kingMoves.append((0,2))
-            if blackPlayer.canCastleRight:
+            if self.canCastleRight('b'):
                 kingMoves.append((0,-2))
 
-        else:
-            if bluePlayer.canCastleLeft:
+        else: # blue
+            if self.canCastleLeft('l'):
                 kingMoves.append((2,0))
-            if bluePlayer.canCastleRight:
+            if self.canCastleRight('l'):
                 kingMoves.append((-2,0))
 
         for i in range(len(kingMoves)):
