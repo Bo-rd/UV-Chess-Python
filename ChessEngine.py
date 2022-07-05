@@ -81,9 +81,9 @@ class GameState():
             ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lp","lB","--"],
             ["--","rN","rp","--","--","--","--","--","--","--","--","--","--","lp","lN","--"],
             ["--","rR","rp","--","--","--","--","--","--","--","--","--","--","lp","lR","--"],
-            ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
+            ["--","--","--","--","--","wN","wB","wQ","--","wB","wN","--","--","--","--","--"],
             ["--","--","--","--","wp","wp","wp","wp","wp","wp","wp","wp","--","--","--","--"],
-            ["--","--","--","--","wR","wN","wB","wQ","wK","wB","wN","wR","--","--","--","--"],
+            ["--","--","--","--","wR","--","--","--","wK","--","--","wR","--","--","--","--"],
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"]
         ]
 
@@ -101,18 +101,18 @@ class GameState():
     def updateKing(self, move):
         # Updates the King's Position tuple if needed.
         if move.pieceMoved == "wK":
-            self.whiteKingLocation = (move.endRow, move.endColumn)
+            self.whiteKingLocation = (move.endRow, move.endCol)
         if move.pieceMoved == "rK":
-            self.redKingLocation = (move.endRow, move.endColumn)
+            self.redKingLocation = (move.endRow, move.endCol)
         if move.pieceMoved == "bK":
-            self.blackKingLocation = (move.endRow, move.endColumn)
+            self.blackKingLocation = (move.endRow, move.endCol)
         if move.pieceMoved == "lK":
-            self.blueKingLocation = (move.endRow, move.endColumn)
+            self.blueKingLocation = (move.endRow, move.endCol)
     
     def makeMove(self, move):
         """ Moves a chess piece """
         self.board[move.startRow][move.startCol] = "--"
-        self.board[move.endRow][move.endColumn] = move.pieceMoved
+        self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move) #logs the move
         
         self.updateKing(move) # Checks and Updates the King's Position tuple if needed.
@@ -127,7 +127,7 @@ class GameState():
         if len(self.moveLog) != 0:
             move = self.moveLog.pop()
             self.board[move.startRow][move.startCol] = move.pieceMoved
-            self.board[move.endRow][move.endColumn] = move.pieceCaptured
+            self.board[move.endRow][move.endCol] = move.pieceCaptured
 
             self.updateKing(move) # Checks and Updates the King's Position tuple if needed.
 
@@ -139,7 +139,7 @@ class GameState():
 
     def getValidMovesHelper(self, move):
         self.board[move.startRow][move.startCol] = "--"
-        self.board[move.endRow][move.endColumn] = move.pieceMoved
+        self.board[move.endRow][move.endCol] = move.pieceMoved
         self.updateKing(move)
 
 
@@ -175,7 +175,7 @@ class GameState():
             # Loops through potential other player's moves
             for attackerMove in attackerMoveList:
                 # If an other piece puts you into check....
-                if self.inCheck(attackerMove.endRow, attackerMove.endColumn): 
+                if self.inCheck(attackerMove.endRow, attackerMove.endCol): 
                     testFlag = False
                     break
 
@@ -190,10 +190,11 @@ class GameState():
         self.blackKingLocation = temp3
         self.blueKingLocation  = temp4
 
-        # for checkmate
+        
         if len(validMoves) > 0:
             return validMoves
 
+        # for checkmate
         else:
             playerSymbol = playerList.currentPlayer.colorCode
             playerNum = playerList.currentPlayer.number
@@ -213,7 +214,7 @@ class GameState():
             else:
                 self.blueKingLocation = (0,0)
 
-            # hard remove players pieces from board
+            # remove players pieces from board
             for row in range(len(self.board)):
                 for col in range(len(self.board[0])):
                     if self.board[row][col][0] == playerSymbol:
@@ -251,8 +252,8 @@ class GameState():
         return moves
 
     # Returnes True if coords are in the 14X14 board AND not in one of those corner spots.
-    def isInsideGameGrid(self, endRow, endColumn):
-        if 1 <= endRow <= 14 and 1 <= endColumn <= 14 and not ((endRow <= 3 and endColumn <= 3) or (endRow >= 12 and endColumn <= 3) or (endRow <= 3 and endColumn >= 12) or (endRow >= 12 and endColumn >= 12)):
+    def isInsideGameGrid(self, endRow, endCol):
+        if 1 <= endRow <= 14 and 1 <= endCol <= 14 and not ((endRow <= 3 and endCol <= 3) or (endRow >= 12 and endCol <= 3) or (endRow <= 3 and endCol >= 12) or (endRow >= 12 and endCol >= 12)):
             return True
         return False
 
@@ -327,13 +328,13 @@ class GameState():
         for searchDirection in directions:
             for index in range(1, 14):
                 endRow = row + searchDirection[0] * index
-                endColumn = column + searchDirection[1] * index
-                if self.isInsideGameGrid(endRow, endColumn):
-                    endPiece = self.board[endRow][endColumn]
+                endCol = column + searchDirection[1] * index
+                if self.isInsideGameGrid(endRow, endCol):
+                    endPiece = self.board[endRow][endCol]
                     if endPiece == "--":
-                        moves.append(Move((row, column), (endRow, endColumn), self.board))
+                        moves.append(Move((row, column), (endRow, endCol), self.board))
                     elif endPiece[0] != rookColor:
-                        moves.append(Move((row, column), (endRow, endColumn), self.board))
+                        moves.append(Move((row, column), (endRow, endCol), self.board))
                         break
                     else:
                         break
@@ -345,11 +346,11 @@ class GameState():
         knightColor = self.board[row][column][0]
         for m in knightMoves:
             endRow = row + m[0]
-            endColumn = column + m[1]
-            if self.isInsideGameGrid(endRow, endColumn):
-                endPiece = self.board[endRow][endColumn]
+            endCol = column + m[1]
+            if self.isInsideGameGrid(endRow, endCol):
+                endPiece = self.board[endRow][endCol]
                 if endPiece[0] != knightColor:
-                    moves.append(Move((row, column), (endRow, endColumn), self.board))
+                    moves.append(Move((row, column), (endRow, endCol), self.board))
 
     def getBishopMoves(self, row, column ,moves):
         directions = ((-1,-1), (-1,1), (1,-1), (1,1))
@@ -357,14 +358,14 @@ class GameState():
         for searchDirection in directions:
             for index in range(1, 14):
                 endRow = row + searchDirection[0] * index
-                endColumn = column + searchDirection[1] * index
-                if self.isInsideGameGrid(endRow, endColumn):
-                    endPiece = self.board[endRow][endColumn]
+                endCol = column + searchDirection[1] * index
+                if self.isInsideGameGrid(endRow, endCol):
+                    endPiece = self.board[endRow][endCol]
                     if endPiece == "--":
-                        moves.append(Move((row, column), (endRow, endColumn), self.board))
+                        moves.append(Move((row, column), (endRow, endCol), self.board))
                     elif endPiece[0] != BishopColor:
-                        #print("Flag 30", row, column, endRow, endColumn)
-                        moves.append(Move((row, column), (endRow, endColumn), self.board))
+                        #print("Flag 30", row, column, endRow, endCol)
+                        moves.append(Move((row, column), (endRow, endCol), self.board))
                         break
                     else:
                         break
@@ -376,15 +377,42 @@ class GameState():
         self.getBishopMoves(row, column, moves)
 
     def getKingMoves(self, row, column ,moves):
-        kingMoves = ((-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1))
+        kingMoves = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
         kingColor = self.board[row][column][0]
-        for i in range(8):
+
+        # adds castling moves for each color
+        if kingColor == 'w':
+            if whitePlayer.canCastleLeft:
+                kingMoves.append((0,-2))
+            if whitePlayer.canCastleRight:
+                kingMoves.append((0,2))
+
+        elif kingColor == 'r':
+            if redPlayer.canCastleLeft:
+                kingMoves.append((-2,0))
+            if redPlayer.canCastleRight:
+                kingMoves.append((2,0))
+
+        elif kingColor == 'b':
+            # upside down version of white
+            if blackPlayer.canCastleLeft:
+                kingMoves.append((0,2))
+            if blackPlayer.canCastleRight:
+                kingMoves.append((0,-2))
+
+        else:
+            if bluePlayer.canCastleLeft:
+                kingMoves.append((2,0))
+            if bluePlayer.canCastleRight:
+                kingMoves.append((-2,0))
+
+        for i in range(len(kingMoves)):
             endRow = row + kingMoves[i][0]
-            endColumn = column + kingMoves[i][1]
-            if self.isInsideGameGrid(endRow, endColumn):
-                endPiece = self.board[endRow][endColumn]
+            endCol = column + kingMoves[i][1]
+            if self.isInsideGameGrid(endRow, endCol):
+                endPiece = self.board[endRow][endCol]
                 if endPiece[0] != kingColor:
-                    moves.append(Move((row, column), (endRow, endColumn), self.board))
+                    moves.append(Move((row, column), (endRow, endCol), self.board))
 
 """ Move Class. Holds a move object as well as the chess notation."""                    
 class Move():
@@ -392,10 +420,10 @@ class Move():
         self.startRow = startSq[0]
         self.startCol = startSq[1]
         self.endRow = endSq[0]
-        self.endColumn = endSq[1]
+        self.endCol = endSq[1]
 
         self.pieceMoved = board[self.startRow][self.startCol]
-        self.pieceCaptured = board[self.endRow][self.endColumn]
+        self.pieceCaptured = board[self.endRow][self.endCol]
 
         # Generates a number from the move to compare elsewhere through the overwritten = below to test for equality.
         self.moveID = self.getChessNotation()
@@ -414,7 +442,7 @@ class Move():
 
     def getChessNotation(self):
         # We could eventually update this to real chess notation if we wanted
-        return self.getRankFile(self.startRow, self.startCol) + self.getRankFile(self.endRow, self.endColumn)
+        return self.getRankFile(self.startRow, self.startCol) + self.getRankFile(self.endRow, self.endCol)
         
     def getRankFile(self, r , c):
         return self.colsToFiles[c] + self.rowsToRanks[r]

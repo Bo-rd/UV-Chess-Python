@@ -15,8 +15,8 @@ window_icon = pygame.image.load(os.path.join('images', 'window_icon.png'))
 pygame.display.set_icon(window_icon)
 
 """ Constants """
-WIDTH = 1000
-HEIGHT = 1000
+WIDTH = 800
+HEIGHT = 800
 
 NUM_OF_HORIZONTAL_SQUARES = 16
 SQUARE_SIZE = HEIGHT // NUM_OF_HORIZONTAL_SQUARES
