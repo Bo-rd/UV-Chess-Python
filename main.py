@@ -166,8 +166,9 @@ def drawSquare( color, row, column, screen, stroke = True):
         pygame.draw.rect(screen, color, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
 
-""" Displayes the current coloring of the board. The colors can be configured in the constants at the top."""
 def drawBoard(selectedTile, hoverTile, screen):
+    """ Displayes the current coloring of the board. The colors can be configured in the constants at the top."""
+
     # Double for loop to go through all the rows and columns.
     for row in range(NUM_OF_HORIZONTAL_SQUARES):
         for column in range(NUM_OF_HORIZONTAL_SQUARES):
@@ -210,8 +211,8 @@ def drawBoard(selectedTile, hoverTile, screen):
             pygame.draw.rect(screen, LINE_STROKE_COLOR, pygame.Rect(12 * SQUARE_SIZE, 12 * SQUARE_SIZE, SQUARE_SIZE*3, SQUARE_SIZE*3),2)
 
 
-""" Draw the pieces to the board by accessing the 2D board array. Only draw squares with pieces. """
 def drawPieces(screen, board):
+    """ Draw the pieces to the board by accessing the 2D board array. Only draw squares with pieces. """
 
     for row in range(NUM_OF_HORIZONTAL_SQUARES):
         for column in range(NUM_OF_HORIZONTAL_SQUARES):
@@ -219,10 +220,9 @@ def drawPieces(screen, board):
             if piece != "--":
                 screen.blit(IMAGES[piece], pygame.Rect((column * SQUARE_SIZE)+(SQUARE_SIZE*(1-GAME_PIECE_SCALER)/2), (row * SQUARE_SIZE)+(SQUARE_SIZE*(1-GAME_PIECE_SCALER)/2), (SQUARE_SIZE), (SQUARE_SIZE)))
 
-""" Draw the row and column indicators in numeric/alpha according to the standard 4P chess layout. """
 def drawNumAndLetters(screen):
+    """ Draw the row and column indicators in numeric/alpha according to the standard 4P chess layout. """
 
-    
     ch = 97 # ascii 'a' = 97 
     for i in range(14):
         # get the letter iteration

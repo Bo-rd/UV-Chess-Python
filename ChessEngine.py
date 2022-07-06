@@ -69,8 +69,8 @@ class GameState():
         self.board = [
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
             ["--","--","--","--","bR","bN","bB","bQ","bK","bB","bN","bR","--","--","--","--"],
-            ["--","--","--","--","bp","bp","bp","bp","bp","bp","bp","bp","--","--","--","--"],
-            ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"],
+            ["--","--","--","--","bp","bp","bp","bp","--","bp","--","bp","--","--","--","--"],
+            ["--","--","--","--","--","--","--","lN","bp","lN","bp","--","--","--","--","--"],
             ["--","rR","rp","--","--","--","--","--","--","--","--","--","--","lp","lR","--"],
             ["--","rN","rp","--","--","--","--","--","--","--","--","--","--","lp","lN","--"],
             ["--","rB","rp","--","--","--","--","--","--","--","--","--","--","lp","lB","--"],
@@ -97,9 +97,16 @@ class GameState():
         # Print player name change on change
 
     def canCastleLeft(self, color):
+        """
+        Determine if the given color of team can castle
+        to the left. Called by getKingMoves().
+        """
         if color == 'w':
+            # verify the king and rook are in the proper locations
             if self.board[14][4] == "wR" and self.board[14][8] == "wK":
                 for i in range(5,8):
+                    # verify that the space between the rook and king
+                    # is empty
                     if self.board[14][i] != "--":
                         return False
                 return True
@@ -126,6 +133,10 @@ class GameState():
                 return True
 
     def canCastleRight(self, color):
+        """
+        Determine if the given color of team can castle
+        to the right. Called by getKingMoves().
+        """
         if color == 'w':
             if self.board[14][11] == "wR" and self.board[14][8] == "wK":
                 for i in range(9,11):
@@ -155,7 +166,11 @@ class GameState():
                 return True
 
     def updateKing(self, move):
-        # Updates the King's Position tuple if needed.
+        """
+        Updates the King's Position tuple if needed. Also
+        check if a castling move was made - if so, move the 
+        appropriate rook and add the move to the move list.
+        """
         if move.pieceMoved == "wK":
             self.whiteKingLocation = (move.endRow, move.endCol)
 
@@ -243,7 +258,7 @@ class GameState():
     
     
     def undoMove(self):
-        """ Undoes the last move """
+        """ Undo the last move """
         if len(self.moveLog) != 0:
             move = self.moveLog.pop()
             self.board[move.startRow][move.startCol] = move.pieceMoved
@@ -255,9 +270,9 @@ class GameState():
             
             print(self.currentPlayerPrintout[playerList.currentPlayer.number]) # Prints new players turn
 
-    # Helper function for getValidMoves. Does same thing as makeMove() but does not change player and log and stuff.
 
     def getValidMovesHelper(self, move):
+        """Helper function for getValidMoves. Does same thing as makeMove() but does not change player and log and stuff."""
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.updateKing(move)
@@ -312,6 +327,9 @@ class GameState():
 
         
         if len(validMoves) > 0:
+            #FIXME there are some random moves making it through
+            for move in validMoves:
+                print(move.getChessNotation())
             return validMoves
 
         # for checkmate
