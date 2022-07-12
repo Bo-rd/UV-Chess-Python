@@ -67,12 +67,30 @@ def main():
     moveMade = True #Flag for when a move is made
     running = True # Used as the truth value for our while loop
 
+    newGame = True
+    
     while running:
         clock.tick(MAX_FPS)
-        for gameEvent in pygame.event.get():
+
+        """
+        Splash draw - need to add a button and get the actual image, I used a screenshot
+        """
+        while newGame:
+            splash = pygame.transform.scale(pygame.image.load(os.path.join("images/splash.png")), (800, 600))
+            screen.blit(splash, pygame.Rect(0, 0, WIDTH, HEIGHT))
+            pygame.display.update()
+
+            #FIXME - splash exits to game on mouseclick anywhere on window - add a button
+            for gameEvent in pygame.event.get():
+                if gameEvent.type == pygame.MOUSEBUTTONDOWN:
+                    newGame = False
+
+        for gameEvent in pygame.event.get():   
+
             if gameEvent.type == pygame.QUIT:
                 running = False
 
+            
                 """ MOUSE HANDLERS """
             # Used to update the hoverTile location that is used to change tile color.
             elif gameEvent.type == pygame.MOUSEMOTION:
