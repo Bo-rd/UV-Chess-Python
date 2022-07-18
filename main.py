@@ -9,6 +9,7 @@ This is our main driver file. It will be responsible for handling user input and
 import pygame
 import ChessEngine
 import os
+
 pygame.init() # I read it is wise to initialize pygame right away.
 pygame.display.set_caption('UVChess - 4 Player Chess - Summer 2022')
 window_icon = pygame.image.load(os.path.join('images', 'window_icon.png'))
@@ -76,14 +77,33 @@ def main():
         Splash draw - need to add a button and get the actual image, I used a screenshot
         """
         while newGame:
+            color = (0,0,0)
+            smallfont = pygame.font.SysFont('Corbel',150)
+            text = smallfont.render('Start' , True , color)
+            
             splash = pygame.transform.scale(pygame.image.load(os.path.join("images/splash.png")), (800, 600))
+            
+            #button rectangle
+            pygame.draw.rect(screen,(155,200,100),[0, HEIGHT - HEIGHT / 4, WIDTH, HEIGHT / 4])
+            #superimpose the text
+            screen.blit(text, (WIDTH/2 - text.get_width()/2,HEIGHT - HEIGHT/5))
+            #draw the splash
             screen.blit(splash, pygame.Rect(0, 0, WIDTH, HEIGHT))
             pygame.display.update()
 
             #FIXME - splash exits to game on mouseclick anywhere on window - add a button
             for gameEvent in pygame.event.get():
-                if gameEvent.type == pygame.MOUSEBUTTONDOWN:
-                    newGame = False
+                mouse = pygame.mouse.get_pos()
+
+                if gameEvent.type == pygame.QUIT:
+                    running = False
+                    pygame.quit()
+                    quit()
+
+                elif gameEvent.type == pygame.MOUSEBUTTONDOWN:
+                    # if clicked within the button box, start game
+                    if HEIGHT - HEIGHT/4 <= mouse[1] <= HEIGHT:
+                        newGame = False
 
         for gameEvent in pygame.event.get():   
 
