@@ -69,6 +69,11 @@ def main():
     running = True # Used as the truth value for our while loop
 
     newGame = True
+    BLACK = (0,0,0) # black text for button
+    button_text = pygame.font.SysFont('Corbel',150)
+    rendered_button_text = button_text.render('Start' , True , BLACK)
+            
+    splash = pygame.transform.scale(pygame.image.load(os.path.join("images/splash.png")), (800, 600))
     
     while running:
         clock.tick(MAX_FPS)
@@ -77,21 +82,15 @@ def main():
         Splash draw - need to add a button and get the actual image, I used a screenshot
         """
         while newGame:
-            color = (0,0,0)
-            smallfont = pygame.font.SysFont('Corbel',150)
-            text = smallfont.render('Start' , True , color)
-            
-            splash = pygame.transform.scale(pygame.image.load(os.path.join("images/splash.png")), (800, 600))
-            
+
             #button rectangle
             pygame.draw.rect(screen,(155,200,100),[0, HEIGHT - HEIGHT / 4, WIDTH, HEIGHT / 4])
             #superimpose the text
-            screen.blit(text, (WIDTH/2 - text.get_width()/2,HEIGHT - HEIGHT/5))
+            screen.blit(rendered_button_text, (WIDTH/2 - rendered_button_text.get_width()/2,HEIGHT - HEIGHT/5))
             #draw the splash
             screen.blit(splash, pygame.Rect(0, 0, WIDTH, HEIGHT))
             pygame.display.update()
 
-            #FIXME - splash exits to game on mouseclick anywhere on window - add a button
             for gameEvent in pygame.event.get():
                 mouse = pygame.mouse.get_pos()
 
