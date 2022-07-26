@@ -11,16 +11,18 @@ Andrew Pritchett -- Christopher Wilkinson -- Joshua Kitchen -- Max Diamond -- Se
 
 
 import copy
+import random
 
 class ChessPlayerObject:
     """ The Node type object that holds player's info for our doubly linked list """
-    def __init__(self, name, gameColor, colorCode, number, nextPlayer = None, previousPlayer = None) -> None:
+    def __init__(self, name, gameColor, colorCode, number, nextPlayer = None, previousPlayer = None, isComputer = False) -> None:
        self.name = name
        self.gameColor = gameColor
        self.colorCode = colorCode
        self.number = number
        self.nextPlayer = nextPlayer
        self.previousPlayer = previousPlayer
+       self.isComputer = isComputer
 
        self.canCastle = True
 
@@ -41,15 +43,13 @@ class GamePlayers:
         self.currentPlayer.previousPlayer = self.currentPlayer.previousPlayer.previousPlayer
         self.currentPlayer.previousPlayer.nextPlayer = self.currentPlayer
 
-""" Implementing/initiating the player list """
+
 userPlayerNames = ["Alpha", "Bravo", "Charlie", "Delta"] # If we want to implement user submitted usernames in the future we could add them to a list like this
 
-# This creates a linked list to keep the player's info and to make switching easier.
-playerList = GamePlayers()
 whitePlayer = ChessPlayerObject(userPlayerNames[0], "White", "w", 0, nextPlayer = None,  previousPlayer = None)
-redPlayer = ChessPlayerObject(userPlayerNames[1], "Red", "r", 1, nextPlayer = None,  previousPlayer = whitePlayer)
-blackPlayer = ChessPlayerObject(userPlayerNames[2], "Black", "b", 2, nextPlayer = None,  previousPlayer = redPlayer)
-bluePlayer = ChessPlayerObject(userPlayerNames[3], "Blue", "l", 3, nextPlayer = None,  previousPlayer = blackPlayer)
+redPlayer = ChessPlayerObject(userPlayerNames[1], "Red", "r", 1, nextPlayer = None,  previousPlayer = whitePlayer, isComputer=True)
+blackPlayer = ChessPlayerObject(userPlayerNames[2], "Black", "b", 2, nextPlayer = None,  previousPlayer = redPlayer, isComputer=True)
+bluePlayer = ChessPlayerObject(userPlayerNames[3], "Blue", "l", 3, nextPlayer = None,  previousPlayer = blackPlayer, isComputer=True)
 
 # Since some objects are not created until after these needed to be manually put in.
 whitePlayer.nextPlayer = redPlayer
@@ -57,9 +57,6 @@ redPlayer.nextPlayer = blackPlayer
 blackPlayer.nextPlayer = bluePlayer
 bluePlayer.nextPlayer = whitePlayer
 whitePlayer.previousPlayer = bluePlayer
-
-# This starts off the doubly linked list with the starting player.
-playerList.currentPlayer = whitePlayer
 
 class GameState():
     def __init__(self) -> None:
@@ -85,6 +82,14 @@ class GameState():
             ["--","--","--","--","--","--","--","--","--","--","--","--","--","--","--","--"]
         ]
 
+        """ Implementing/initiating the player list """
+
+        # This creates a linked list to keep the player's info and to make switching easier.
+        self.playerList = GamePlayers()
+
+        # This starts off the doubly linked list with the starting player.
+        self.playerList.currentPlayer = whitePlayer
+
         self.whiteKingLocation = (14, 8)
         self.redKingLocation = (8, 1)
         self.blackKingLocation = (1, 8)
@@ -92,9 +97,40 @@ class GameState():
 
         self.moveFunctions = {'p': self.getPawnMoves, "R": self.getRookMoves, "N": self.getKnightMoves, "B": self.getBishopMoves, "Q": self.getQueenMoves, "K": self.getKingMoves}
         self.currentPlayerPrintout = {0:"It is White's Turn", 1:"It is Red's Turn", 2:"It is Black's Turn", 3:"It is Blue's Turn"}
-        print(self.currentPlayerPrintout[playerList.currentPlayer.number]) # Prints out initial starting player
+        print(self.currentPlayerPrintout[self.playerList.currentPlayer.number]) # Prints out initial starting player
         self.moveLog = []
         # Print player name change on change
+
+
+    def computerMove(self):
+        pieceValues = {
+            '-':0,
+            'p':1,
+            'N':3,
+            'B':3,
+            'R':5,
+            'Q':9,
+            'K':10
+        }
+
+        moves = []
+
+        for m in self.getValidMoves():
+            enemyPiece = self.board[m.endRow][m.endCol][1]
+
+            moves.append((m, pieceValues[enemyPiece]))
+        
+        def sortByValue(e):
+            return e[1] # sort by move value
+
+        moves.sort(key=sortByValue, reverse=True)
+        
+        if moves[0][1] != 0:
+            return moves[0][0] # optimal move
+        
+        # if there are no capture moves, return a random move
+        return moves[random.randint(0,len(moves) - 1)][0]
+        
 
     def canCastleLeft(self, color):
         """
@@ -252,9 +288,9 @@ class GameState():
         
         self.updateKing(move) # Checks and Updates the King's Position tuple if needed.
 
-        playerList.nextPlayer()
+        self.playerList.nextPlayer()
 
-        print(self.currentPlayerPrintout[playerList.currentPlayer.number]) # Prints new players turn
+        print(self.currentPlayerPrintout[self.playerList.currentPlayer.number]) # Prints new players turn
     
     
     def undoMove(self):
@@ -266,9 +302,9 @@ class GameState():
 
             self.updateKing(move) # Checks and Updates the King's Position tuple if needed.
 
-            playerList.previousPlayer()
+            self.playerList.previousPlayer()
             
-            print(self.currentPlayerPrintout[playerList.currentPlayer.number]) # Prints new players turn
+            print(self.currentPlayerPrintout[self.playerList.currentPlayer.number]) # Prints new players turn
 
 
     def getValidMovesHelper(self, move):
@@ -297,12 +333,12 @@ class GameState():
             attackerMoveList = []
             self.getValidMovesHelper(moves[i]) # Moves one piece per loop of the origin color.
 
-            currPlayer = playerList.currentPlayer
+            currPlayer = self.playerList.currentPlayer
 
-            playerList.nextPlayer() # move to the next player
-            while playerList.currentPlayer != currPlayer:
+            self.playerList.nextPlayer() # move to the next player
+            while self.playerList.currentPlayer != currPlayer:
                 attackerMoveList += self.getAllPossibleMoves()
-                playerList.nextPlayer() # increment
+                self.playerList.nextPlayer() # increment
 
             # loop ends at the current player
 
@@ -334,10 +370,10 @@ class GameState():
 
         # for checkmate
         else:
-            playerSymbol = playerList.currentPlayer.colorCode
-            playerNum = playerList.currentPlayer.number
+            playerSymbol = self.playerList.currentPlayer.colorCode
+            playerNum = self.playerList.currentPlayer.number
 
-            playerList.removePlayer()
+            self.playerList.removePlayer()
 
             # remove from turn printout roster
             self.currentPlayerPrintout.pop(playerNum)
@@ -364,16 +400,16 @@ class GameState():
 
     def inCheck(self, row, column):
         """ Determines if the current player is in check """
-        if playerList.currentPlayer.number == 0:
+        if self.playerList.currentPlayer.number == 0:
             return (row == self.whiteKingLocation[0]) and (column == self.whiteKingLocation[1])
         
-        if playerList.currentPlayer.number == 1:
+        if self.playerList.currentPlayer.number == 1:
             return (row == self.redKingLocation[0]) and (column == self.redKingLocation[1])   
 
-        if playerList.currentPlayer.number == 2:
+        if self.playerList.currentPlayer.number == 2:
             return (row == self.blackKingLocation[0]) and (column == self.blackKingLocation[1])
 
-        if playerList.currentPlayer.number == 3:
+        if self.playerList.currentPlayer.number == 3:
             return (row == self.blueKingLocation[0]) and (column == self.blueKingLocation[1])
 
     
@@ -384,7 +420,7 @@ class GameState():
             for column in range(len(self.board[row])):
                 # This calculates moves only for the current players pieces.
                 turn = self.board[row][column][0] # Index 0 is the color/player position on the board.
-                if (turn == 'w' and playerList.currentPlayer.number == 0) or (turn == 'r' and playerList.currentPlayer.number == 1) or (turn == 'b' and playerList.currentPlayer.number == 2) or (turn == 'l' and playerList.currentPlayer.number == 3):
+                if (turn == 'w' and self.playerList.currentPlayer.number == 0) or (turn == 'r' and self.playerList.currentPlayer.number == 1) or (turn == 'b' and self.playerList.currentPlayer.number == 2) or (turn == 'l' and self.playerList.currentPlayer.number == 3):
                     piece = self.board[row][column][1] # Index 1 is the piece type.
                     self.moveFunctions[piece](row, column, moves) # Calls move function for specific piece
         return moves
@@ -401,7 +437,7 @@ class GameState():
         """
 
         ''' Player 0 is white. This logic is for WHITE Pawns. '''
-        if playerList.currentPlayer.number == 0: 
+        if self.playerList.currentPlayer.number == 0: 
             if self.board[row-1][column] == "--":
                 moves.append(Move((row, column), (row-1, column), self.board))
                 if row == 13 and self.board[row-2][column] == "--":
@@ -416,7 +452,7 @@ class GameState():
                     moves.append(Move((row, column), (row-1, column+1), self.board))
 
         ''' Player 1 is red. This logic is for RED Pawns. '''
-        if playerList.currentPlayer.number == 1: 
+        if self.playerList.currentPlayer.number == 1: 
             if self.board[row][column+1] == "--":
                 moves.append(Move((row, column), (row, column+1), self.board))
                 if column == 2 and self.board[row][column+2] == "--":
@@ -431,7 +467,7 @@ class GameState():
                     moves.append(Move((row, column), (row+1, column+1), self.board))
 
         ''' Player 2 is black. This logic is for BLACK Pawns. '''
-        if playerList.currentPlayer.number == 2: 
+        if self.playerList.currentPlayer.number == 2: 
             if self.board[row+1][column] == "--":
                 moves.append(Move((row, column), (row+1, column), self.board))
                 if row == 2 and self.board[row+2][column] == "--":
@@ -446,7 +482,7 @@ class GameState():
                     moves.append(Move((row, column), (row+1, column+1), self.board))
 
         ''' Player 3 is blue. This logic is for BLUE Pawns. '''
-        if playerList.currentPlayer.number == 3: 
+        if self.playerList.currentPlayer.number == 3: 
             if self.board[row][column-1] == "--":
                 moves.append(Move((row, column), (row, column-1), self.board))
                 if column == 13 and self.board[row][column-2] == "--":

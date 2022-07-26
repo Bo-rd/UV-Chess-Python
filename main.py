@@ -105,12 +105,19 @@ def main():
                     if HEIGHT - HEIGHT/4 <= mouse[1] <= HEIGHT:
                         newGame = False
 
-        for gameEvent in pygame.event.get():   
+        for gameEvent in pygame.event.get():
+
+            if gs.playerList.currentPlayer.isComputer:
+                move = gs.computerMove()
+                print("Computer move")
+                gs.makeMove(move)
+                resetStorageVariables()
+                moveMade = True
+                break
 
             if gameEvent.type == pygame.QUIT:
                 running = False
 
-            
                 """ MOUSE HANDLERS """
             # Used to update the hoverTile location that is used to change tile color.
             elif gameEvent.type == pygame.MOUSEMOTION:
@@ -121,6 +128,7 @@ def main():
 
             # Used when the mouse is clicked.
             elif gameEvent.type == pygame.MOUSEBUTTONDOWN:
+
                 location = pygame.mouse.get_pos() 
                 col = location[0]//SQUARE_SIZE
                 row = location[1]//SQUARE_SIZE
@@ -134,7 +142,7 @@ def main():
                     resetStorageVariables()
 
                 # Prohibits clicking on other player's pieces.
-                elif len(playerClicks) == 0 and (gs.board[row][col][0] != ChessEngine.playerList.currentPlayer.colorCode):
+                elif len(playerClicks) == 0 and (gs.board[row][col][0] != gs.playerList.currentPlayer.colorCode):
                     resetStorageVariables()
 
                 # Stores the click into our variables.
@@ -179,6 +187,7 @@ def main():
                     resetStorageVariables()
                     moveMade = True
 
+
         # Once a move is made (board has changed). This recalculates the valid moves on the board again.
         if moveMade:
             validMoves = gs.getValidMoves()
@@ -207,7 +216,7 @@ def drawSquare( color, row, column, screen, stroke = True):
 def drawBoard(selectedTile, hoverTile, validMoves, screen):
     """ Displayes the current coloring of the board. The colors can be configured in the constants at the top."""
 
-    validTiles = [] # hold the valid moves for a selected piece in (row,col) tuples
+    validTiles = [] # hold the valid moves for a selected piece in (row,col) tuple
     # Get the moves in from the selected piece
     if (selectedTile[0] != 0 and selectedTile[1] != 0):
         for m in validMoves:
