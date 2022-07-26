@@ -31,6 +31,7 @@ LIGHT_TILE_COLOR = pygame.Color(192, 158, 121)
 SMALL_CORNER_COLOR = pygame.Color(89, 89, 89)
 LARGE_CORNER_COLOR = pygame.Color(120, 120, 120)
 HOVER_COLOR = pygame.Color(3, 157, 252)
+VALID_COLOR = pygame.Color(4,252,3)
 SELECTED_COLOR = pygame.Color(252, 186, 3)
 WHITE_BORDER_COLOR = pygame.Color(255, 255, 255)
 LINE_STROKE_COLOR = pygame.Color(0, 0, 0)
@@ -79,7 +80,7 @@ def main():
         clock.tick(MAX_FPS)
 
         """
-        Splash draw - need to add a button and get the actual image, I used a screenshot
+        Splash draw
         """
         while newGame:
 
@@ -183,11 +184,11 @@ def main():
             validMoves = gs.getValidMoves()
             # Uncomment for verbose printing valid moves
             #for i in validMoves:
-            #    print(i.startRow, i.startCol, i.endRow, i.endColumn, i.pieceMoved, i.pieceCaptured, i.moveID)
+            #    print(i.startRow, i.startCol, i.endRow, i.endCol, i.pieceMoved, i.pieceCaptured, i.moveID)
             moveMade = False
 
         # Draws the game  
-        drawBoard(selectedTile, hoverTile, screen)
+        drawBoard(selectedTile, hoverTile, validMoves, screen)
         drawPieces(screen, gs.board)
         drawNumAndLetters(screen)
         pygame.display.flip()
@@ -203,8 +204,15 @@ def drawSquare( color, row, column, screen, stroke = True):
         pygame.draw.rect(screen, color, pygame.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
 
-def drawBoard(selectedTile, hoverTile, screen):
+def drawBoard(selectedTile, hoverTile, validMoves, screen):
     """ Displayes the current coloring of the board. The colors can be configured in the constants at the top."""
+
+    validTiles = [] # hold the valid moves for a selected piece in (row,col) tuples
+    # Get the moves in from the selected piece
+    if (selectedTile[0] != 0 and selectedTile[1] != 0):
+        for m in validMoves:
+            if (m.startRow == selectedTile[0] and m.startCol == selectedTile[1]):
+                validTiles.append((m.endRow, m.endCol))
 
     # Double for loop to go through all the rows and columns.
     for row in range(NUM_OF_HORIZONTAL_SQUARES):
@@ -231,6 +239,10 @@ def drawBoard(selectedTile, hoverTile, screen):
             elif(row==selectedTile[0] and column==selectedTile[1]):
                 drawSquare(SELECTED_COLOR, row, column, screen)
 
+            # draw all the valid tiles for the selected piece
+            elif((row, column) in validTiles):
+                drawSquare(VALID_COLOR, row, column, screen)
+                
             # This code Makes the traditional checkerboard pattern with a LIGHT_TILE_COLOR and a DARK_TILE_COLOR.
             else:
                 colors = [LIGHT_TILE_COLOR, DARK_TILE_COLOR] # These three lines could be collapsed but I left it for readability for now.
