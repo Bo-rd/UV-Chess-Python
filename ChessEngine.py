@@ -86,7 +86,6 @@ class GameState():
 
         # This creates a linked list to keep the player's info and to make switching easier.
         self.playerList = GamePlayers()
-
         # This starts off the doubly linked list with the starting player.
         self.playerList.currentPlayer = whitePlayer
 
@@ -103,6 +102,13 @@ class GameState():
 
 
     def computerMove(self):
+        """
+        Return "best" move based on enemy piece value. The pieceValues dict
+        decides the value of each. If there is no move that captures, a random
+        move is returned. Need to add some sort of functionality that checks
+        the valid moves after a given move - essentially making a tree based
+        on a move and finding the branch with the highest value.
+        """
         pieceValues = {
             '-':0,
             'p':1,

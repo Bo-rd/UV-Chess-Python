@@ -107,6 +107,7 @@ def main():
 
         for gameEvent in pygame.event.get():
 
+            # if computer make a move without waiting for event
             if gs.playerList.currentPlayer.isComputer:
                 move = gs.computerMove()
                 print("Computer move")
