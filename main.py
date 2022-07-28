@@ -66,16 +66,15 @@ def main():
 
     gs = ChessEngine.GameState()
 
-    moveMade = True #Flag for when a move is made
+    newGame = True # used for splash screen
     running = True # Used as the truth value for our while loop
+    moveMade = True #Flag for when a move is made
 
-    newGame = True
-    BLACK = (0,0,0) # black text for button
+    splash = pygame.transform.scale(pygame.image.load(os.path.join("images/splash.png")), (776, 576))
+
     button_text = pygame.font.SysFont('Corbel',150)
-    rendered_button_text = button_text.render('Start' , True , BLACK)
-            
-    splash = pygame.transform.scale(pygame.image.load(os.path.join("images/splash.png")), (800, 600))
-    
+    rendered_button_text = button_text.render('Start' , True , LINE_STROKE_COLOR)
+
     while running:
         clock.tick(MAX_FPS)
 
@@ -89,7 +88,7 @@ def main():
             #superimpose the text
             screen.blit(rendered_button_text, (WIDTH/2 - rendered_button_text.get_width()/2,HEIGHT - HEIGHT/5))
             #draw the splash
-            screen.blit(splash, pygame.Rect(0, 0, WIDTH, HEIGHT))
+            screen.blit(splash, pygame.Rect(12, 12, WIDTH, HEIGHT))
             pygame.display.update()
 
             for gameEvent in pygame.event.get():
@@ -104,17 +103,17 @@ def main():
                     # if clicked within the button box, start game
                     if HEIGHT - HEIGHT/4 <= mouse[1] <= HEIGHT:
                         newGame = False
+        
+                        # computer make a move without waiting for event
+        if gs.playerList.currentPlayer.isComputer:
+            move = gs.computerMove()
+            print("Computer move")
+            gs.makeMove(move)
+
+            resetStorageVariables()
+            moveMade = True
 
         for gameEvent in pygame.event.get():
-
-            # if computer make a move without waiting for event
-            if gs.playerList.currentPlayer.isComputer:
-                move = gs.computerMove()
-                print("Computer move")
-                gs.makeMove(move)
-                resetStorageVariables()
-                moveMade = True
-                break
 
             if gameEvent.type == pygame.QUIT:
                 running = False
@@ -169,6 +168,7 @@ def main():
                     
                     # If legal makes the move.
                     if selectedMove in validMoves:
+
                         print("Rank & File Notation:" + selectedMove.getChessNotation() + "\n") #Prints out the chess notation to the console.
                         gs.makeMove(selectedMove)
                         moveMade = True
@@ -192,9 +192,6 @@ def main():
         # Once a move is made (board has changed). This recalculates the valid moves on the board again.
         if moveMade:
             validMoves = gs.getValidMoves()
-            # Uncomment for verbose printing valid moves
-            #for i in validMoves:
-            #    print(i.startRow, i.startCol, i.endRow, i.endCol, i.pieceMoved, i.pieceCaptured, i.moveID)
             moveMade = False
 
         # Draws the game  

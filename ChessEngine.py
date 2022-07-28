@@ -285,16 +285,39 @@ class GameState():
                 self.board[rookMove.endRow][rookMove.endCol] = rookMove.pieceMoved
                 self.moveLog.append(rookMove) #logs the move
 
+    def movePiece(self, move):
+        """
+        Move piece on board, and check for pawn reaching far
+        side and becoming a queen.
+        """
+        # the loops below check for a pawn reaching the far side
+        # if so, the piece is changed to a queen
+
+        self.board[move.startRow][move.startCol] = "--"
+
+        #white
+        if move.pieceMoved == "wp" and move.endRow == 1:
+            self.board[move.endRow][move.endCol] = "wQ"
+        #black
+        elif move.pieceMoved == "bp" and move.endRow == 14:
+            self.board[move.endRow][move.endCol] = "bQ"
+        #red
+        elif move.pieceMoved == "rp" and move.endCol == 14:
+            self.board[move.endRow][move.endCol] = "rQ"
+        #blue
+        elif move.pieceMoved == "lp" and move.endCol == 1:
+            self.board[move.endRow][move.endCol] = "lQ"
+        else:
+            self.board[move.endRow][move.endCol] = move.pieceMoved
+
     
     def makeMove(self, move):
         """ Moves a chess piece """
-        self.board[move.startRow][move.startCol] = "--"
-        self.board[move.endRow][move.endCol] = move.pieceMoved
+        self.movePiece(move) # move on the board, change piece if pawn reaches far side
         self.moveLog.append(move) #logs the move
-        
         self.updateKing(move) # Checks and Updates the King's Position tuple if needed.
 
-        self.playerList.nextPlayer()
+        self.playerList.nextPlayer() # change turn
 
         print(self.currentPlayerPrintout[self.playerList.currentPlayer.number]) # Prints new players turn
     
@@ -354,9 +377,9 @@ class GameState():
                 # If an other piece puts you into check....
                 if self.inCheck(attackerMove.endRow, attackerMove.endCol): 
                     testFlag = False
-                    break
+                    #break
 
-            if testFlag == True:
+            if testFlag:
                 validMoves.append(moves[i])
 
             self.board = copy.deepcopy(boardBackup) # Restores the board.
@@ -370,8 +393,6 @@ class GameState():
         
         if len(validMoves) > 0:
             #FIXME there are some random moves making it through
-            for move in validMoves:
-                print(move.getChessNotation())
             return validMoves
 
         # for checkmate
@@ -400,8 +421,11 @@ class GameState():
                     if self.board[row][col][0] == playerSymbol:
                         self.board[row][col] = "--"
             
-            print(self.currentPlayerPrintout[playerList.currentPlayer.number]) # Prints new players turn
-
+            if len(self.currentPlayerPrintout) > 1:
+                print(self.currentPlayerPrintout[self.playerList.currentPlayer.number]) # Prints new players turn
+            else:
+                print(self.playerList.currentPlayer.gameColor + " wins!")
+                
             return self.getValidMoves() # get moves for next player
 
     def inCheck(self, row, column):
@@ -420,7 +444,7 @@ class GameState():
 
     
     def getAllPossibleMoves(self):
-        """All moves without consideriding checks"""
+        """All moves without considering checks"""
         moves = []
         for row in range(len(self.board)): 
             for column in range(len(self.board[row])):
