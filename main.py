@@ -9,6 +9,7 @@ This is our main driver file. It will be responsible for handling user input and
 import pygame
 import ChessEngine
 import os
+import time
 
 pygame.init() # I read it is wise to initialize pygame right away.
 pygame.display.set_caption('UVChess - 4 Player Chess - Summer 2022')
@@ -26,9 +27,11 @@ GAME_PIECE_SCALER = 0.75 # A value 0-1 to scale the game piece to the tile.
 
 MAX_FPS = 60
 
+currentPlayerPrintout = {0:pygame.Color(255, 255, 255), 1:pygame.Color(200,0,0), 2:pygame.Color(0, 0, 0), 3:pygame.Color(0,0, 120)}
+
 DARK_TILE_COLOR = pygame.Color(53, 44, 35)
 LIGHT_TILE_COLOR = pygame.Color(192, 158, 121)
-SMALL_CORNER_COLOR = pygame.Color(89, 89, 89)
+SMALL_CORNER_COLOR = pygame.Color(255,255,255)
 LARGE_CORNER_COLOR = pygame.Color(120, 120, 120)
 HOVER_COLOR = pygame.Color(3, 157, 252)
 VALID_COLOR = pygame.Color(4,252,3)
@@ -36,6 +39,8 @@ SELECTED_COLOR = pygame.Color(252, 186, 3)
 WHITE_BORDER_COLOR = pygame.Color(255, 255, 255)
 LINE_STROKE_COLOR = pygame.Color(0, 0, 0)
 font = pygame.font.Font(None, 25)
+
+gs = ChessEngine.GameState()
 
 # Helps load all the images into memory once. Also makes it easier to swap different piece images without retyping everything (Ex: Wood Piece image files)
 IMAGES = {}
@@ -64,8 +69,6 @@ def main():
     clock = pygame.time.Clock()
     screen.fill(pygame.Color("white"))
 
-    gs = ChessEngine.GameState()
-
     newGame = True # used for splash screen
     running = True # Used as the truth value for our while loop
     moveMade = True #Flag for when a move is made
@@ -76,6 +79,7 @@ def main():
     rendered_button_text = button_text.render('Start' , True , LINE_STROKE_COLOR)
 
     while running:
+        SMALL_CORNER_COLOR = currentPlayerPrintout[gs.playerList.currentPlayer.number]
         clock.tick(MAX_FPS)
 
         """
@@ -108,6 +112,7 @@ def main():
         if gs.playerList.currentPlayer.isComputer:
             move = gs.computerMove()
             print("Computer move")
+            time.sleep(1)
             gs.makeMove(move)
 
             resetStorageVariables()
@@ -192,6 +197,7 @@ def main():
         # Once a move is made (board has changed). This recalculates the valid moves on the board again.
         if moveMade:
             validMoves = gs.getValidMoves()
+            print(currentPlayerPrintout[gs.playerList.currentPlayer.number])
             moveMade = False
 
         # Draws the game  
@@ -227,7 +233,7 @@ def drawBoard(selectedTile, hoverTile, validMoves, screen):
 
             if (row == 0) or (row == 15) or (column == 0) or (column == 15):
                 if (row == 0 and column == 0) or (row == 15 and column == 0) or (row == 0 and column == 15) or (row == 15 and column == 15):
-                    drawSquare(SMALL_CORNER_COLOR, row, column, screen)
+                    drawSquare(currentPlayerPrintout[gs.playerList.currentPlayer.number], row, column, screen)
                 else:
                     drawSquare(WHITE_BORDER_COLOR, row, column, screen)
 
